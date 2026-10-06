@@ -31,7 +31,16 @@ Images are processed locally using Canvas 2D. No upload service or backend is in
 
 ## Implementation
 
-`lib/renderer.ts` generates procedural grayscale source fields and renders the selected texture. `components/Studio.tsx` owns upload handling, controls, preview, and export. Source pixels are cached and redraws are coalesced with animation frames. The renderer uses a fixed output size, so high-resolution uploads do not increase interactive rendering cost.
+`components/Studio.tsx` composes the workspace and control sections, coordinating reset, source comparison, and feedback. Feature modules live in `components/studio/`:
+
+- `useArtworkSource.ts` owns sample selection, upload validation/decoding, and cached source pixels.
+- `useArtworkSettings.ts` owns DialKit configuration, effect/color settings, and reset defaults.
+- `ArtworkWorkspace.tsx` owns canvas rendering, card preview, and drag-and-drop; `WorkspaceToolbar.tsx` owns theme and sound controls.
+- `EffectControls`, `SourceControls`, `TextureControls`, and `OutputControls` render the corresponding control sections.
+- `usePngExport.ts` renders an independent canvas for PNG downloads, so preview chrome and the original comparison never affect exports.
+- `presets.ts` holds the available effects, source groups, and palettes.
+
+`lib/renderer.ts` generates procedural grayscale source fields and renders the selected texture. Source pixels are cached and redraws are coalesced with animation frames. The renderer uses a fixed output size, so high-resolution uploads do not increase interactive rendering cost.
 
 The initial renderer is Canvas 2D, not a GPU shader. Images are fitted into a square with white letterboxing before tone processing. Pattern exports are square textures, not guaranteed seamless tiles. Settings and uploaded images are kept only for the current page session.
 
