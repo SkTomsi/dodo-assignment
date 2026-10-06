@@ -34,6 +34,7 @@ export function WorkspaceToolbar({
 			</span>
 			<div className="flex shrink-0 items-center gap-1">
 				<button
+					type="button"
 					className={`grid size-[30px] place-items-center rounded-[5px] text-text-faint ${
 						cardView ? "bg-surface-hover text-text" : ""
 					}`}
@@ -48,6 +49,7 @@ export function WorkspaceToolbar({
 					<Layers2 size={17} />
 				</button>
 				<button
+					type="button"
 					className={`grid size-[30px] place-items-center rounded-[5px] text-text-faint ${
 						isDark ? "bg-surface-hover text-text" : ""
 					}`}
@@ -59,6 +61,7 @@ export function WorkspaceToolbar({
 					{soundOn ? <Volume2 size={17} /> : <VolumeX size={17} />}
 				</button>
 				<button
+					type="button"
 					className={`grid size-[30px] place-items-center rounded-[5px] text-text-faint ${
 						isDark ? "bg-surface-hover text-text" : ""
 					}`}

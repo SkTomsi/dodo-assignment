@@ -1,9 +1,9 @@
-import { useRef } from "react";
 import { Upload, X } from "lucide-react";
+import { useRef } from "react";
 import { useSoundFx } from "@/components/sound-provider";
-import type { ArtworkSource } from "./useArtworkSource";
 import { ControlSection } from "./ControlSection";
 import { SourceSample } from "./SourceSample";
+import type { ArtworkSource } from "./useArtworkSource";
 
 export function SourceControls({
 	artwork,
@@ -31,6 +31,7 @@ export function SourceControls({
 			<div className="mb-2.5 flex rounded-[6px] bg-surface-muted p-[3px]">
 				{(["Image", "Pattern"] as const).map((item) => (
 					<button
+						type="button"
 						key={item}
 						onClick={() => {
 							chooseMode(item);
@@ -50,6 +51,7 @@ export function SourceControls({
 			<div className="flex items-stretch gap-2">
 				{mode === "Image" && (
 					<button
+						type="button"
 						className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1.5 rounded-[6px] border border-dashed text-text-faint hover:bg-surface-hover ${
 							useUpload
 								? "border-border-strong bg-surface-hover shadow-[0_0_0_2px_var(--color-border)]"
@@ -90,6 +92,7 @@ export function SourceControls({
 				>
 					<span className="min-w-0 flex-1">{error}</span>
 					<button
+						type="button"
 						aria-label="Dismiss error"
 						onClick={() => {
 							dismissError();

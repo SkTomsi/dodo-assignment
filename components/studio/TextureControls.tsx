@@ -13,6 +13,7 @@ export function TextureControls({ reset }: { reset: () => void }) {
 			<div className="mb-2.5 flex min-h-[14px] shrink-0 items-center justify-between text-text-faint">
 				<span className={sectionLabel}>03 / TEXTURE</span>
 				<button
+					type="button"
 					className="-mr-1 rounded-[4px] p-1 text-text-faint hover:bg-surface-hover"
 					onClick={() => {
 						reset();

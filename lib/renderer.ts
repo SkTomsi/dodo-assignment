@@ -26,7 +26,8 @@ const clamp = (v: number) => Math.max(0, Math.min(1, v));
 export function createSource(name: SourceName): HTMLCanvasElement {
 	const canvas = document.createElement("canvas");
 	canvas.width = canvas.height = 640;
-	const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
+	const ctx = canvas.getContext("2d", { willReadFrequently: true });
+	if (!ctx) throw new Error("Canvas 2D rendering is unavailable.");
 	const image = ctx.createImageData(640, 640);
 	for (let y = 0; y < 640; y++) {
 		for (let x = 0; x < 640; x++) {
@@ -90,7 +91,8 @@ export function prepareImage(
 ) {
 	const canvas = document.createElement("canvas");
 	canvas.width = canvas.height = 640;
-	const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
+	const ctx = canvas.getContext("2d", { willReadFrequently: true });
+	if (!ctx) throw new Error("Canvas 2D rendering is unavailable.");
 	ctx.fillStyle = "#fff";
 	ctx.fillRect(0, 0, 640, 640);
 	const scale = Math.min(640 / width, 640 / height);
@@ -105,9 +107,9 @@ export function prepareImage(
 }
 
 export function sourcePixels(source: HTMLCanvasElement) {
-	return source
-		.getContext("2d", { willReadFrequently: true })!
-		.getImageData(0, 0, source.width, source.height);
+	const ctx = source.getContext("2d", { willReadFrequently: true });
+	if (!ctx) throw new Error("Canvas 2D rendering is unavailable.");
+	return ctx.getImageData(0, 0, source.width, source.height);
 }
 const bayer = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
 
@@ -119,7 +121,8 @@ export function renderArt(
 ) {
 	if (canvas.width !== size || canvas.height !== size)
 		canvas.width = canvas.height = size;
-	const ctx = canvas.getContext("2d")!;
+	const ctx = canvas.getContext("2d");
+	if (!ctx) throw new Error("Canvas 2D rendering is unavailable.");
 	ctx.clearRect(0, 0, size, size);
 	if (!settings.transparent) {
 		ctx.fillStyle = settings.paper;

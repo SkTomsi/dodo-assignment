@@ -34,15 +34,17 @@ function render(duration, sampleAt) {
 	const out = new Float64Array(count);
 	for (let i = 0; i < count; i++) {
 		const t = i / SAMPLE_RATE;
-		const edge =
-			Math.min(1, t / 0.0015) * Math.min(1, (duration - t) / 0.006);
+		const edge = Math.min(1, t / 0.0015) * Math.min(1, (duration - t) / 0.006);
 		out[i] = sampleAt(t) * edge;
 	}
 	return out;
 }
 
 function partials(t, freqs) {
-	return freqs.reduce((sum, [freq, gain]) => sum + gain * Math.sin(2 * Math.PI * freq * t), 0);
+	return freqs.reduce(
+		(sum, [freq, gain]) => sum + gain * Math.sin(2 * Math.PI * freq * t),
+		0,
+	);
 }
 
 function decay(t, tau, attack) {
@@ -92,7 +94,10 @@ const sounds = {};
 				[2349, 0.45],
 				[3136, 0.18],
 			]);
-			return tone * decay(t, 0.01, 0.0008) * 0.55 + lp(noise()) * decay(t, 0.003, 0.0003) * 0.5;
+			return (
+				tone * decay(t, 0.01, 0.0008) * 0.55 +
+				lp(noise()) * decay(t, 0.003, 0.0003) * 0.5
+			);
 		}),
 		0.9,
 	);
@@ -109,32 +114,42 @@ const sounds = {};
 				[1108, 0.3],
 				[1480, 0.18],
 			]);
-			return tone * decay(t, 0.018, 0.0015) * 0.7 + lp(noise()) * decay(t, 0.002, 0.0003) * 0.12;
+			return (
+				tone * decay(t, 0.018, 0.0015) * 0.7 +
+				lp(noise()) * decay(t, 0.002, 0.0003) * 0.12
+			);
 		}),
 		0.9,
 	);
 }
 
 // Rising two-note confirmation for exports and uploads.
-{
-	sounds.success = normalize(
-		render(0.26, (t) => {
-			const first = t < 0.16 ? partials(t, [[880, 1], [1760, 0.16]]) * decay(t, 0.09, 0.006) : 0;
-			const t2 = t - 0.085;
-			const second =
-				t2 > 0
-					? partials(t2, [[1318.51, 1], [2637.02, 0.14]]) * decay(t2, 0.13, 0.006)
-					: 0;
-			return first * 0.75 + second * 0.85;
-		}),
-		0.9,
-	);
-}
+sounds.success = normalize(
+	render(0.26, (t) => {
+		const first =
+			t < 0.16
+				? partials(t, [
+						[880, 1],
+						[1760, 0.16],
+					]) * decay(t, 0.09, 0.006)
+				: 0;
+		const t2 = t - 0.085;
+		const second =
+			t2 > 0
+				? partials(t2, [
+						[1318.51, 1],
+						[2637.02, 0.14],
+					]) * decay(t2, 0.13, 0.006)
+				: 0;
+		return first * 0.75 + second * 0.85;
+	}),
+	0.9,
+);
 
 for (const [name, samples] of Object.entries(sounds)) {
 	const file = join(outDir, `${name}.wav`);
 	writeFileSync(file, toWav(samples));
 	console.log(
-		`${name}.wav — ${(samples.length / SAMPLE_RATE).toFixed(3)}s, ${(samples.length * 2 + 44) / 1024 | 0} KB`,
+		`${name}.wav — ${(samples.length / SAMPLE_RATE).toFixed(3)}s, ${((samples.length * 2 + 44) / 1024) | 0} KB`,
 	);
 }

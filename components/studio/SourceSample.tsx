@@ -1,10 +1,10 @@
-import { useEffect, useRef } from "react";
 import { Check } from "lucide-react";
+import { useEffect, useRef } from "react";
 import {
 	createSource,
-	sourcePixels,
 	renderArt,
 	type SourceName,
+	sourcePixels,
 } from "@/lib/renderer";
 
 export function SourceSample({
@@ -18,9 +18,11 @@ export function SourceSample({
 }) {
 	const ref = useRef<HTMLCanvasElement>(null);
 	useEffect(() => {
+		const canvas = ref.current;
+		if (!canvas) return;
 		const pixels = sourcePixels(createSource(name));
 		renderArt(
-			ref.current!,
+			canvas,
 			pixels,
 			{
 				effect: "Halftone",
@@ -40,6 +42,7 @@ export function SourceSample({
 	}, [name]);
 	return (
 		<button
+			type="button"
 			className={`relative flex min-w-0 flex-1 flex-col overflow-hidden rounded-[6px] border bg-surface ${
 				selected
 					? "border-border-strong shadow-[0_0_0_2px_var(--color-border)]"
@@ -51,6 +54,7 @@ export function SourceSample({
 			<canvas
 				ref={ref}
 				aria-hidden="true"
+				tabIndex={-1}
 				className="block h-[44px] w-full bg-canvas-bg"
 			/>
 			<span

@@ -11,6 +11,15 @@ npm run dev
 
 Open the local URL printed by Next.js (`http://127.0.0.1:3000`). `npm run build` type-checks and builds the production app; `npm run start` serves that build locally.
 
+## Code quality
+
+- `npm run format` formats supported source files with Biome.
+- `npm run lint` runs Biome and the existing Next.js ESLint checks.
+- `npm run check` checks formatting, imports, and lint without changing files.
+- `npm run check:fix` applies safe Biome fixes, then runs ESLint.
+
+Biome uses tabs, recommended React/Next.js rules, and Tailwind CSS v4 parsing. Generated files and the npm lockfile are excluded; `.gitignore` is respected. ESLint remains enabled for Next.js and React checks that Biome does not yet cover.
+
 ## First version
 
 - Upload PNG, JPEG, WebP, AVIF, or GIF images (up to 20 MB), or drop them onto the canvas. GIFs are treated as a static image.

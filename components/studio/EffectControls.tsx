@@ -1,7 +1,7 @@
-import type { Effect } from "@/lib/renderer";
 import { useSoundFx } from "@/components/sound-provider";
-import { effects, glyphs } from "./presets";
+import type { Effect } from "@/lib/renderer";
 import { ControlSection } from "./ControlSection";
+import { effects, glyphs } from "./presets";
 
 export function EffectControls({
 	effect,
@@ -16,6 +16,7 @@ export function EffectControls({
 			<div className="flex rounded-[6px] bg-surface-muted p-[3px]">
 				{effects.map((item, i) => (
 					<button
+						type="button"
 						key={item}
 						onClick={() => {
 							setEffect(item);

@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Upload } from "lucide-react";
-import { ART_SIZE, renderArt, type RenderSettings } from "@/lib/renderer";
+import { useEffect, useRef, useState } from "react";
 import { useSoundFx } from "@/components/sound-provider";
+import { ART_SIZE, type RenderSettings, renderArt } from "@/lib/renderer";
 import { WorkspaceToolbar } from "./WorkspaceToolbar";
 
 export function ArtworkWorkspace({
@@ -27,15 +27,18 @@ export function ArtworkWorkspace({
 	const [dragging, setDragging] = useState(false);
 	const canvas = useRef<HTMLCanvasElement>(null);
 	const originalCanvas = useRef<HTMLCanvasElement>(null);
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Redraw the canvas when switching preview layouts.
 	useEffect(() => {
 		const frame = requestAnimationFrame(() => {
 			if (canvas.current) renderArt(canvas.current, pixels, settings);
 		});
 		return () => cancelAnimationFrame(frame);
 	}, [pixels, settings, cardView]);
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Redraw the canvas when switching preview layouts.
 	useEffect(() => {
 		if (original && originalCanvas.current) {
-			const ctx = originalCanvas.current.getContext("2d")!;
+			const ctx = originalCanvas.current.getContext("2d");
+			if (!ctx) return;
 			ctx.clearRect(0, 0, 640, 640);
 			ctx.drawImage(source, 0, 0);
 		}
@@ -52,7 +55,8 @@ export function ArtworkWorkspace({
 				setCardView={setCardView}
 			/>
 
-			<div
+			<section
+				aria-label="Image drop area"
 				className={`relative flex items-center justify-center overflow-hidden bg-surface-muted p-4 min-[641px]:p-6 aspect-square min-[900px]:aspect-auto min-[900px]:min-h-0 min-[900px]:flex-1 ${
 					cardView ? "min-[900px]:min-h-[440px]" : ""
 				}`}
@@ -143,10 +147,11 @@ export function ArtworkWorkspace({
 						<span>Drop your image here</span>
 					</div>
 				)}
-			</div>
+			</section>
 
 			<div className="flex h-10 shrink-0 items-center justify-between gap-2.5 border-t border-border px-3 text-xs text-text-faint">
 				<button
+					type="button"
 					onClick={() => {
 						setOriginal(!original);
 						play("toggle");

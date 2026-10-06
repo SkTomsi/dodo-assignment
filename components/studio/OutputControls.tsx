@@ -50,6 +50,7 @@ export function OutputControls({
 					const selected = ink === palette.ink && paper === palette.paper;
 					return (
 						<button
+							type="button"
 							key={palette.name}
 							className={`h-[30px] min-w-0 flex-1 place-items-center rounded-[5px] border border-border hover:-translate-y-0.5 ${
 								selected
@@ -75,6 +76,7 @@ export function OutputControls({
 			</div>
 
 			<button
+				type="button"
 				role="switch"
 				aria-checked={transparent}
 				onClick={() => {
@@ -88,6 +90,7 @@ export function OutputControls({
 			</button>
 
 			<button
+				type="button"
 				className="mt-2.5 flex w-full items-center justify-center gap-2 rounded-[6px] bg-cta px-3 py-2.5 text-sm text-cta-text shadow-panel hover:bg-cta-hover"
 				onClick={download}
 				disabled={loading || exporting}

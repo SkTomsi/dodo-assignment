@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import { useSoundFx } from "./sound-provider";
 import { ArtworkWorkspace } from "./studio/ArtworkWorkspace";
 import { EffectControls } from "./studio/EffectControls";
-import { SourceControls } from "./studio/SourceControls";
-import { TextureControls } from "./studio/TextureControls";
 import { OutputControls } from "./studio/OutputControls";
+import { SourceControls } from "./studio/SourceControls";
 import { StudioNotice } from "./studio/StudioNotice";
-import { useArtworkSource } from "./studio/useArtworkSource";
+import { TextureControls } from "./studio/TextureControls";
 import { useArtworkSettings } from "./studio/useArtworkSettings";
+import { useArtworkSource } from "./studio/useArtworkSource";
 import { usePngExport } from "./studio/usePngExport";
 
 export default function Studio() {
