@@ -11,10 +11,13 @@ import {
 	RotateCcw,
 	Sun,
 	Upload,
+	Volume2,
+	VolumeX,
 	X,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { useSoundFx } from "@/components/sound-provider";
 import {
 	ART_SIZE,
 	createSource,
@@ -50,8 +53,7 @@ const defaultPalette = palettes[0];
 const effects: Effect[] = ["Halftone", "Dither", "Lines"];
 const imageSources: SourceName[] = ["Bloom", "Orbit", "Sphere"];
 const patternSources: SourceName[] = ["Waves", "Ripple", "Mesh"];
-const sectionLabel =
-	"text-xs font-semibold tracking-[1.5px] text-text-faint";
+const sectionLabel = "text-xs font-semibold tracking-[1.5px] text-text-faint";
 const glyphs = [
 	"bg-[radial-gradient(currentColor_1.2px,transparent_1.4px)] bg-[length:4px_4px]",
 	"bg-[conic-gradient(currentColor_25%,transparent_0_50%,currentColor_0_75%,transparent_0)] bg-[length:6px_6px]",
@@ -142,6 +144,22 @@ function Sample({
 	);
 }
 
+function Switch({ on }: { on: boolean }) {
+	return (
+		<span
+			className={`relative block h-4 w-7 shrink-0 rounded-full transition-colors ${
+				on ? "bg-cta" : "bg-surface-active"
+			}`}
+		>
+			<span
+				className={`absolute top-[2px] block size-3 rounded-full transition-[left] ${
+					on ? "left-[14px] bg-surface" : "left-[2px] bg-text-faint"
+				}`}
+			/>
+		</span>
+	);
+}
+
 export default function Studio() {
 	const dial = useDialKitController("Make it yours", config, {
 		id: "dotform-controls",
@@ -171,6 +189,7 @@ export default function Studio() {
 	const request = useRef(0);
 	const { resolvedTheme, setTheme } = useTheme();
 	const isDark = resolvedTheme === "dark";
+	const { play, soundOn, toggleSound } = useSoundFx();
 	const source = useMemo(
 		() => (useUpload && uploaded ? uploaded.canvas : createSource(sample)),
 		[sample, useUpload, uploaded],
@@ -254,6 +273,7 @@ export default function Studio() {
 			setMode("Image");
 			setOriginal(false);
 			setNotice("Image ready. Make it yours.");
+			play("success");
 		} catch {
 			if (id === request.current)
 				setError("We couldn’t read that image. Try a different file.");
@@ -282,6 +302,7 @@ export default function Studio() {
 		setNotice("Controls reset");
 	}
 	function download() {
+		play("click");
 		setExporting(true);
 		const output = document.createElement("canvas");
 		renderArt(output, pixels, settings);
@@ -298,6 +319,7 @@ export default function Studio() {
 			link.click();
 			setTimeout(() => URL.revokeObjectURL(url), 1000);
 			setNotice("PNG exported. Go make something good.");
+			play("success");
 		}, "image/png");
 	}
 
@@ -324,7 +346,10 @@ export default function Studio() {
 									className={`grid size-[30px] place-items-center rounded-[5px] text-text-faint ${
 										cardView ? "bg-surface-hover text-text" : ""
 									}`}
-									onClick={() => setCardView(!cardView)}
+									onClick={() => {
+										setCardView(!cardView);
+										play("toggle");
+									}}
 									aria-pressed={cardView}
 									title="Preview on a UI card"
 									aria-label="Preview on a UI card"
@@ -335,7 +360,25 @@ export default function Studio() {
 									className={`grid size-[30px] place-items-center rounded-[5px] text-text-faint ${
 										isDark ? "bg-surface-hover text-text" : ""
 									}`}
-									onClick={toggleTheme}
+									onClick={toggleSound}
+									title={
+										soundOn ? "Mute sound effects" : "Unmute sound effects"
+									}
+									aria-label={
+										soundOn ? "Mute sound effects" : "Unmute sound effects"
+									}
+									aria-pressed={!soundOn}
+								>
+									{soundOn ? <Volume2 size={17} /> : <VolumeX size={17} />}
+								</button>
+								<button
+									className={`grid size-[30px] place-items-center rounded-[5px] text-text-faint ${
+										isDark ? "bg-surface-hover text-text" : ""
+									}`}
+									onClick={() => {
+										toggleTheme();
+										play("toggle");
+									}}
 									title={
 										isDark ? "Switch to light mode" : "Switch to dark mode"
 									}
@@ -374,7 +417,7 @@ export default function Studio() {
 							<div
 								className={
 									cardView
-										? "max-h-full w-[min(100%,280px)] overflow-hidden rounded-[12px] bg-surface shadow-card-big text-text"
+										? "max-h-full w-[min(100%,280px)] overflow-hidden rounded-2xl bg-surface shadow-card-big text-text"
 										: "aspect-square h-auto w-full max-w-full overflow-hidden rounded-[2px] shadow-card min-[900px]:h-full min-[900px]:w-auto"
 								}
 								style={
@@ -392,9 +435,9 @@ export default function Studio() {
 									</div>
 								)}
 								<div
-									className={`relative leading-[0] ${
+									className={`relative inset-0 leading-0 rounded-2xl ${
 										transparent
-											? "bg-[conic-gradient(var(--color-check-a)_25%,var(--color-check-b)_0_50%,var(--color-check-a)_0_75%,var(--color-check-b)_0)] bg-[length:16px_16px]"
+											? "bg-[conic-gradient(var(--color-check-a)_25%,var(--color-check-b)_0_50%,var(--color-check-a)_0_75%,var(--color-check-b)_0)] bg-size-[16px_16px]"
 											: ""
 									} ${cardView ? "mx-4 my-3" : ""}`}
 									style={
@@ -424,13 +467,13 @@ export default function Studio() {
 								</div>
 								{cardView && (
 									<div className="px-4 pb-4">
-										<span className="text-xs tracking-[1.3px] opacity-65">
+										<span className="text-xs tracking-[1.3px] opacity-35">
 											A DIFFERENT PERSPECTIVE
 										</span>
-										<h2 className="font-display mt-1.5 text-lg font-semibold tracking-[-0.7px]">
+										<h2 className="font-display text-lg font-semibold tracking-[-0.7px] mt-1.2">
 											Made of little things.
 										</h2>
-										<p className="mt-1.5 text-sm opacity-60">
+										<p className="text-sm opacity-60">
 											A study in texture, shape, and possibility.
 										</p>
 									</div>
@@ -447,7 +490,10 @@ export default function Studio() {
 
 						<div className="flex h-10 shrink-0 items-center justify-between gap-2.5 border-t border-border px-3 text-xs text-text-faint">
 							<button
-								onClick={() => setOriginal(!original)}
+								onClick={() => {
+									setOriginal(!original);
+									play("toggle");
+								}}
 								aria-pressed={original}
 								className="-ml-1.5 rounded-[5px] px-1.5 py-1.5 text-xs text-text-muted hover:bg-surface-hover"
 							>
@@ -468,7 +514,10 @@ export default function Studio() {
 								{effects.map((item, i) => (
 									<button
 										key={item}
-										onClick={() => setEffect(item)}
+										onClick={() => {
+											setEffect(item);
+											play("click");
+										}}
 										aria-pressed={effect === item}
 										className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-[4px] px-1 py-[7px] text-sm ${
 											effect === item
@@ -491,7 +540,10 @@ export default function Studio() {
 								{(["Image", "Pattern"] as const).map((item) => (
 									<button
 										key={item}
-										onClick={() => chooseMode(item)}
+										onClick={() => {
+											chooseMode(item);
+											play("click");
+										}}
 										className={`flex-1 rounded-[4px] px-2 py-[6px] text-sm ${
 											mode === item
 												? "bg-surface text-text shadow-tab"
@@ -512,7 +564,10 @@ export default function Studio() {
 												: "border-border-strong"
 										}`}
 										disabled={loading}
-										onClick={() => input.current?.click()}
+										onClick={() => {
+											input.current?.click();
+											play("click");
+										}}
 										aria-pressed={useUpload}
 									>
 										<Upload size={14} />
@@ -527,6 +582,7 @@ export default function Studio() {
 										name={name}
 										selected={!useUpload && sample === name}
 										onClick={() => {
+											play("click");
 											setSample(name);
 											setUseUpload(false);
 											setOriginal(false);
@@ -545,7 +601,10 @@ export default function Studio() {
 									<span className="min-w-0 flex-1">{error}</span>
 									<button
 										aria-label="Dismiss error"
-										onClick={() => setError("")}
+										onClick={() => {
+											setError("");
+											play("click");
+										}}
 										className="shrink-0 text-text-faint"
 									>
 										<X size={12} />
@@ -570,7 +629,10 @@ export default function Studio() {
 								<span className={sectionLabel}>03 / TEXTURE</span>
 								<button
 									className="-mr-1 rounded-[4px] p-1 text-text-faint hover:bg-surface-hover"
-									onClick={reset}
+									onClick={() => {
+										reset();
+										play("click");
+									}}
 									aria-label="Reset controls"
 									title="Reset controls"
 								>
@@ -593,9 +655,7 @@ export default function Studio() {
 							label="04 / OTHER"
 							className="shrink-0"
 							extra={
-								<span className="text-xs text-text-faint">
-									{paletteName}
-								</span>
+								<span className="text-xs text-text-faint">{paletteName}</span>
 							}
 						>
 							<div className="flex gap-1.5">
@@ -611,6 +671,7 @@ export default function Studio() {
 													: ""
 											}`}
 											onClick={() => {
+												play("click");
 												setInk(palette.ink);
 												setPaper(palette.paper);
 											}}
@@ -631,23 +692,14 @@ export default function Studio() {
 							<button
 								role="switch"
 								aria-checked={transparent}
-								onClick={() => setTransparent((value) => !value)}
+								onClick={() => {
+									setTransparent((value) => !value);
+									play("toggle");
+								}}
 								className="mt-2.5 flex w-full items-center justify-between rounded-[5px] px-1.5 py-1.5 text-sm text-text-muted hover:bg-surface-hover"
 							>
 								<span>Transparent background</span>
-								<span
-									className={`relative block h-4 w-7 shrink-0 rounded-full transition-colors ${
-										transparent ? "bg-cta" : "bg-surface-active"
-									}`}
-								>
-									<span
-										className={`absolute top-[2px] block size-3 rounded-full transition-[left] ${
-											transparent
-												? "left-[14px] bg-surface"
-												: "left-[2px] bg-text-faint"
-										}`}
-									/>
-								</span>
+								<Switch on={transparent} />
 							</button>
 
 							<button
