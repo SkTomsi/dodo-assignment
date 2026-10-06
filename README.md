@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite. `npm run build` type-checks and builds the production app; `npm run preview` serves that build locally.
+Open the local URL printed by Next.js (`http://127.0.0.1:3000`). `npm run build` type-checks and builds the production app; `npm run start` serves that build locally.
 
 ## First version
 
@@ -31,7 +31,7 @@ Images are processed locally using Canvas 2D. No upload service or backend is in
 
 ## Implementation
 
-`src/renderer.ts` generates procedural grayscale source fields and renders the selected texture. `src/App.tsx` owns upload handling, controls, preview, and export. Source pixels are cached and redraws are coalesced with animation frames. The renderer uses a fixed output size, so high-resolution uploads do not increase interactive rendering cost.
+`lib/renderer.ts` generates procedural grayscale source fields and renders the selected texture. `components/Studio.tsx` owns upload handling, controls, preview, and export. Source pixels are cached and redraws are coalesced with animation frames. The renderer uses a fixed output size, so high-resolution uploads do not increase interactive rendering cost.
 
 The initial renderer is Canvas 2D, not a GPU shader. Images are fitted into a square with white letterboxing before tone processing. Pattern exports are square textures, not guaranteed seamless tiles. Settings and uploaded images are kept only for the current page session.
 

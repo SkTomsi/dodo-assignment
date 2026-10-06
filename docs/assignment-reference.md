@@ -72,7 +72,7 @@ Typography, layout, motion, transitions, controls, performance, and overall feel
 
 Use whatever stack you are most comfortable with.
 
-React, Next.js, Three.js, WebGL, WebGPU, Canvas, CSS, SVG, GSAP, Framer Motion, shaders, or anything else.
+Next.js, tailwind, motion, WebGL, WebGPU, Canvas, CSS, SVG, shaders, or anything else.
 
 There are no bonus points for using a more complicated stack.
 
