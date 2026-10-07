@@ -242,7 +242,7 @@ export function ArtworkPresentation({
 			{previewStyle === "folder" && (
 				<fieldset
 					aria-label="Folder keyboard shortcuts"
-					className="absolute inset-x-4 bottom-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 rounded-lg border border-border bg-surface px-2 py-2 text-[10px] text-text-muted shadow-panel"
+					className="absolute inset-x-4 bottom-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 rounded-lg border border-border bg-surface px-2 py-2 text-[10px] text-text-muted shadow-panel w-fit mx-auto"
 				>
 					<span className="flex items-center gap-1.5">
 						<kbd
