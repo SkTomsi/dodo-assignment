@@ -56,6 +56,8 @@ export default function Studio() {
 						original={original}
 						setOriginal={setOriginal}
 						loadFile={artwork.loadFile}
+						onNotice={setNotice}
+						onError={setError}
 					/>
 					<aside
 						className="sidebar flex min-h-0 flex-col gap-3 overflow-y-auto rounded-[10px] border border-border bg-surface-muted p-3 shadow-panel"

@@ -1,7 +1,8 @@
-import { ArrowUpRight, Upload } from "lucide-react";
+import { Upload } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useSoundFx } from "@/components/sound-provider";
 import { ART_SIZE, type RenderSettings, renderArt } from "@/lib/renderer";
+import { ArtworkPresentation, type PreviewStyle } from "./ArtworkPresentation";
 import { WorkspaceToolbar } from "./WorkspaceToolbar";
 
 export function ArtworkWorkspace({
@@ -12,6 +13,8 @@ export function ArtworkWorkspace({
 	original,
 	setOriginal,
 	loadFile,
+	onNotice,
+	onError,
 }: {
 	source: HTMLCanvasElement;
 	pixels: ImageData;
@@ -20,21 +23,21 @@ export function ArtworkWorkspace({
 	original: boolean;
 	setOriginal: (value: boolean) => void;
 	loadFile: (file?: File) => Promise<void>;
+	onNotice: (message: string) => void;
+	onError: (message: string) => void;
 }) {
 	const { effect, transparent, paper } = settings;
 	const { play } = useSoundFx();
-	const [cardView, setCardView] = useState(false);
+	const [previewStyle, setPreviewStyle] = useState<PreviewStyle>("canvas");
 	const [dragging, setDragging] = useState(false);
 	const canvas = useRef<HTMLCanvasElement>(null);
 	const originalCanvas = useRef<HTMLCanvasElement>(null);
-	// biome-ignore lint/correctness/useExhaustiveDependencies: Redraw the canvas when switching preview layouts.
 	useEffect(() => {
 		const frame = requestAnimationFrame(() => {
 			if (canvas.current) renderArt(canvas.current, pixels, settings);
 		});
 		return () => cancelAnimationFrame(frame);
-	}, [pixels, settings, cardView]);
-	// biome-ignore lint/correctness/useExhaustiveDependencies: Redraw the canvas when switching preview layouts.
+	}, [pixels, settings]);
 	useEffect(() => {
 		if (original && originalCanvas.current) {
 			const ctx = originalCanvas.current.getContext("2d");
@@ -42,7 +45,7 @@ export function ArtworkWorkspace({
 			ctx.clearRect(0, 0, 640, 640);
 			ctx.drawImage(source, 0, 0);
 		}
-	}, [source, original, cardView]);
+	}, [source, original]);
 
 	return (
 		<section
@@ -51,14 +54,14 @@ export function ArtworkWorkspace({
 		>
 			<WorkspaceToolbar
 				title={title}
-				cardView={cardView}
-				setCardView={setCardView}
+				previewStyle={previewStyle}
+				setPreviewStyle={setPreviewStyle}
 			/>
 
 			<section
 				aria-label="Image drop area"
 				className={`relative flex items-center justify-center overflow-hidden bg-surface-muted p-4 min-[641px]:p-6 aspect-square min-[900px]:aspect-auto min-[900px]:min-h-0 min-[900px]:flex-1 ${
-					cardView ? "min-[900px]:min-h-[440px]" : ""
+					previewStyle !== "canvas" ? "min-h-[500px]" : ""
 				}`}
 				onDragOver={(event) => {
 					event.preventDefault();
@@ -79,25 +82,19 @@ export function ArtworkWorkspace({
 				<div className="absolute bottom-[17px] left-[17px] size-2 border-b border-l border-border-strong" />
 				<div className="absolute bottom-[17px] right-[17px] size-2 border-b border-r border-border-strong" />
 
-				<div
-					className={
-						cardView
-							? "max-h-full w-[min(100%,280px)] overflow-hidden rounded-2xl bg-surface shadow-card-big text-text"
-							: "aspect-square h-auto w-full max-w-full overflow-hidden rounded-[2px] shadow-card min-[900px]:h-full min-[900px]:w-auto"
-					}
-					style={
-						cardView || transparent ? undefined : { backgroundColor: paper }
-					}
+				<ArtworkPresentation
+					previewStyle={previewStyle}
+					title={title}
+					effect={effect}
+					ink={settings.ink}
+					paper={paper}
+					transparent={transparent}
+					onNotice={onNotice}
+					onError={onError}
 				>
 					<div
-						className={`relative inset-0 leading-0 rounded-2xl ${
-							transparent
-								? "bg-[conic-gradient(var(--color-check-a)_25%,var(--color-check-b)_0_50%,var(--color-check-a)_0_75%,var(--color-check-b)_0)] bg-size-[16px_16px]"
-								: ""
-						} ${cardView ? "mx-4 my-3 overflow-hidden" : ""}`}
-						style={
-							cardView && !transparent ? { backgroundColor: paper } : undefined
-						}
+						className={`relative overflow-hidden leading-0 ${transparent && previewStyle !== "folder" ? "bg-[conic-gradient(var(--color-check-a)_25%,var(--color-check-b)_0_50%,var(--color-check-a)_0_75%,var(--color-check-b)_0)] bg-size-[16px_16px]" : ""}`}
+						style={transparent ? undefined : { backgroundColor: paper }}
 					>
 						<canvas
 							ref={canvas}
@@ -109,7 +106,7 @@ export function ArtworkWorkspace({
 						/>
 						{original && (
 							<canvas
-								className="absolute inset-0"
+								className="absolute inset-0 h-full w-full"
 								ref={originalCanvas}
 								width="640"
 								height="640"
@@ -118,20 +115,7 @@ export function ArtworkWorkspace({
 							/>
 						)}
 					</div>
-					{cardView && (
-						<div className="px-4 pb-4">
-							<span className="text-xs tracking-[1.3px] opacity-35">
-								A DIFFERENT PERSPECTIVE
-							</span>
-							<h2 className="font-display text-lg font-semibold tracking-[-0.7px] mt-1.2">
-								Made of little things.
-							</h2>
-							<p className="text-sm opacity-60">
-								A study in texture, shape, and possibility.
-							</p>
-						</div>
-					)}
-				</div>
+				</ArtworkPresentation>
 
 				{dragging && (
 					<div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-3 bg-overlay-bg text-base text-overlay-text outline-2 outline-dashed outline-offset-[-12px] outline-overlay-line">

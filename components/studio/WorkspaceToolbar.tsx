@@ -1,16 +1,24 @@
-import { Layers2, Moon, Sun, Volume2, VolumeX } from "lucide-react";
+import {
+	ChevronDown,
+	Layers2,
+	Moon,
+	Sun,
+	Volume2,
+	VolumeX,
+} from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect } from "react";
 import { useSoundFx } from "@/components/sound-provider";
+import { PREVIEW_STYLES, type PreviewStyle } from "./ArtworkPresentation";
 
 export function WorkspaceToolbar({
 	title,
-	cardView,
-	setCardView,
+	previewStyle,
+	setPreviewStyle,
 }: {
 	title: string;
-	cardView: boolean;
-	setCardView: (value: boolean) => void;
+	previewStyle: PreviewStyle;
+	setPreviewStyle: (value: PreviewStyle) => void;
 }) {
 	const { resolvedTheme, setTheme } = useTheme();
 	const isDark = resolvedTheme === "dark";
@@ -33,21 +41,36 @@ export function WorkspaceToolbar({
 				<span className="truncate">{title}</span>
 			</span>
 			<div className="flex shrink-0 items-center gap-1">
-				<button
-					type="button"
-					className={`grid size-[30px] place-items-center rounded-[5px] text-text-faint ${
-						cardView ? "bg-surface-hover text-text" : ""
-					}`}
-					onClick={() => {
-						setCardView(!cardView);
-						play("toggle");
-					}}
-					aria-pressed={cardView}
-					title="Preview on a UI card"
-					aria-label="Preview on a UI card"
-				>
-					<Layers2 size={17} />
-				</button>
+				<div className="relative flex items-center">
+					<Layers2
+						size={14}
+						aria-hidden="true"
+						className="pointer-events-none absolute left-2 text-text-muted"
+					/>
+					<select
+						aria-label="Preview style"
+						value={previewStyle}
+						onChange={(event) => {
+							const style = PREVIEW_STYLES.find(
+								(item) => item.value === event.target.value,
+							);
+							if (style) setPreviewStyle(style.value);
+							play("toggle");
+						}}
+						className="h-8 cursor-pointer appearance-none rounded-[5px] border border-border bg-surface py-1 pl-7 pr-7 text-xs text-text focus-visible:outline-2 focus-visible:outline-offset-2"
+					>
+						{PREVIEW_STYLES.map((style) => (
+							<option key={style.value} value={style.value}>
+								{style.label}
+							</option>
+						))}
+					</select>
+					<ChevronDown
+						size={12}
+						aria-hidden="true"
+						className="pointer-events-none absolute right-2 text-text-faint"
+					/>
+				</div>
 				<button
 					type="button"
 					className={`grid size-[30px] place-items-center rounded-[5px] text-text-faint ${
