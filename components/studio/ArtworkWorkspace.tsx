@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSoundFx } from "@/components/sound-provider";
 import { ART_SIZE, type RenderSettings, renderArt } from "@/lib/renderer";
 import { ArtworkPresentation, type PreviewStyle } from "./ArtworkPresentation";
+import { pickCardPlaceholder } from "./card-placeholders";
 import { WorkspaceToolbar } from "./WorkspaceToolbar";
 
 export function ArtworkWorkspace({
@@ -29,6 +30,7 @@ export function ArtworkWorkspace({
 	const { effect, transparent, paper } = settings;
 	const { play } = useSoundFx();
 	const [previewStyle, setPreviewStyle] = useState<PreviewStyle>("canvas");
+	const [cardCopy, setCardCopy] = useState(() => pickCardPlaceholder());
 	const [dragging, setDragging] = useState(false);
 	const canvas = useRef<HTMLCanvasElement>(null);
 	const originalCanvas = useRef<HTMLCanvasElement>(null);
@@ -55,7 +57,16 @@ export function ArtworkWorkspace({
 			<WorkspaceToolbar
 				title={title}
 				previewStyle={previewStyle}
-				setPreviewStyle={setPreviewStyle}
+				setPreviewStyle={(style) => {
+					if (
+						style !== previewStyle &&
+						style !== "canvas" &&
+						style !== "folder"
+					) {
+						setCardCopy(pickCardPlaceholder(cardCopy));
+					}
+					setPreviewStyle(style);
+				}}
 			/>
 
 			<section
@@ -84,7 +95,7 @@ export function ArtworkWorkspace({
 
 				<ArtworkPresentation
 					previewStyle={previewStyle}
-					title={title}
+					cardCopy={cardCopy}
 					effect={effect}
 					ink={settings.ink}
 					paper={paper}

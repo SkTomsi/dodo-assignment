@@ -2,6 +2,7 @@ import { ArrowUpRight, Download } from "lucide-react";
 import { type CSSProperties, type ReactNode, useRef, useState } from "react";
 import FolderSvg from "@/components/folder";
 import { exportFolder } from "@/lib/export-folder";
+import type { CardPlaceholder } from "./card-placeholders";
 
 export const PREVIEW_STYLES = [
 	{ value: "canvas", label: "Canvas" },
@@ -37,7 +38,7 @@ const images: Record<PreviewStyle, string> = {
 
 export function ArtworkPresentation({
 	previewStyle,
-	title,
+	cardCopy,
 	effect,
 	ink,
 	paper,
@@ -47,7 +48,7 @@ export function ArtworkPresentation({
 	onError,
 }: {
 	previewStyle: PreviewStyle;
-	title: string;
+	cardCopy: CardPlaceholder;
 	effect: string;
 	ink: string;
 	paper: string;
@@ -108,8 +109,8 @@ export function ArtworkPresentation({
 				{previewStyle === "folder" && <FolderSvg ink={ink} paper={paper} />}
 				{previewStyle === "editorial" && (
 					<div className="flex items-center justify-between border-b border-border-strong px-4 py-3 text-[10px] uppercase tracking-[2px]">
-						<span>Form & texture</span>
-						<span>No. 001</span>
+						<span>{cardCopy.category}</span>
+						<span>{cardCopy.detail}</span>
 					</div>
 				)}
 				<div
@@ -205,34 +206,34 @@ export function ArtworkPresentation({
 				)}
 				{previewStyle === "classic" && (
 					<div className="px-4 pb-4">
-						<span className="text-[10px] tracking-[1.3px] text-text-faint">
-							A DIFFERENT PERSPECTIVE
+						<span className="text-[10px] uppercase tracking-[1.3px] text-text-faint">
+							{cardCopy.category}
 						</span>
 						<h2 className="mt-1 font-display text-lg font-semibold tracking-[-0.7px]">
-							Made of little things.
+							{cardCopy.title}
 						</h2>
 						<p className="mt-1 text-sm text-text-muted">
-							A study in texture, shape, and possibility.
+							{cardCopy.description}
 						</p>
 					</div>
 				)}
 				{previewStyle === "polaroid" && (
 					<div className="px-1 pb-2 pt-5">
 						<h2 className="truncate font-serif text-xl italic">
-							{title}, in little details.
+							{cardCopy.title}
 						</h2>
 						<p className="mt-2 font-mono text-[9px] uppercase tracking-[2px] opacity-50">
-							Texture study / {effect}
+							{cardCopy.category} / {cardCopy.detail}
 						</p>
 					</div>
 				)}
 				{previewStyle === "editorial" && (
 					<div className="border-t border-border-strong p-4">
 						<h2 className="truncate font-serif text-[32px] leading-none tracking-[-1px]">
-							The art of {title.toLowerCase()}.
+							{cardCopy.title}
 						</h2>
 						<div className="mt-4 flex items-center justify-between text-[10px] uppercase tracking-[1.5px] text-text-muted">
-							<span>{effect} / Selected works</span>
+							<span>Read the story</span>
 							<ArrowUpRight size={16} aria-hidden="true" />
 						</div>
 					</div>
