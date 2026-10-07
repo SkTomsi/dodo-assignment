@@ -89,20 +89,12 @@ export function ArtworkWorkspace({
 						cardView || transparent ? undefined : { backgroundColor: paper }
 					}
 				>
-					{cardView && (
-						<div className="flex items-center justify-between px-4 pt-4">
-							<span className="text-xs tracking-[1.4px]">
-								FIELD NOTES / 001
-							</span>
-							<ArrowUpRight size={16} />
-						</div>
-					)}
 					<div
 						className={`relative inset-0 leading-0 rounded-2xl ${
 							transparent
 								? "bg-[conic-gradient(var(--color-check-a)_25%,var(--color-check-b)_0_50%,var(--color-check-a)_0_75%,var(--color-check-b)_0)] bg-size-[16px_16px]"
 								: ""
-						} ${cardView ? "mx-4 my-3" : ""}`}
+						} ${cardView ? "mx-4 my-3 overflow-hidden" : ""}`}
 						style={
 							cardView && !transparent ? { backgroundColor: paper } : undefined
 						}
