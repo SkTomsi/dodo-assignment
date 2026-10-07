@@ -34,12 +34,45 @@ export function ArtworkWorkspace({
 	const [dragging, setDragging] = useState(false);
 	const canvas = useRef<HTMLCanvasElement>(null);
 	const originalCanvas = useRef<HTMLCanvasElement>(null);
+	// Ripple time in seconds; only advances while animating so pausing
+	// (original view, reduced motion, animate off) never causes a phase jump.
+	const clock = useRef(0);
 	useEffect(() => {
-		const frame = requestAnimationFrame(() => {
-			if (canvas.current) renderArt(canvas.current, pixels, settings);
-		});
+		const el = canvas.current;
+		if (!el) return;
+		const animate =
+			settings.animate &&
+			settings.motion > 0 &&
+			!original &&
+			!window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+		if (!animate) {
+			const frame = requestAnimationFrame(() =>
+				renderArt(el, pixels, settings),
+			);
+			return () => cancelAnimationFrame(frame);
+		}
+		let frame = 0;
+		let last = 0;
+		let gap = 0;
+		let prev: number | null = null;
+		const loop = (now: number) => {
+			frame = requestAnimationFrame(loop);
+			if (now - last < gap) return;
+			last = now;
+			if (prev !== null) clock.current += (now - prev) / 1000;
+			prev = now;
+			const start = performance.now();
+			renderArt(el, pixels, settings, ART_SIZE, clock.current);
+			// Back off when a full redraw is expensive (dense grids) so the
+			// ripple stays smooth instead of starving the main thread.
+			gap = Math.min(
+				250,
+				Math.max(1000 / 60, (performance.now() - start) * 1.5),
+			);
+		};
+		frame = requestAnimationFrame(loop);
 		return () => cancelAnimationFrame(frame);
-	}, [pixels, settings]);
+	}, [pixels, settings, original]);
 	useEffect(() => {
 		if (original && originalCanvas.current) {
 			const ctx = originalCanvas.current.getContext("2d");

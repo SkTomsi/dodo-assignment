@@ -33,6 +33,8 @@ export function SourceSample({
 				rotation: 0,
 				scale: 1,
 				invert: false,
+				animate: false,
+				motion: 0,
 				ink: "#52564f",
 				paper: "#efefe9",
 				transparent: false,

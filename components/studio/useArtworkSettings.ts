@@ -7,6 +7,8 @@ const config = {
 	spacing: [9, 3, 24, 1],
 	size: [0.9, 0.3, 1.4, 0.01],
 	rotation: [0, -90, 90, 1],
+	animate: true,
+	motion: [0.7, 0, 1.5, 0.05],
 	tone: {
 		_collapsed: false,
 		contrast: [1.15, 0.3, 2.5, 0.05],
@@ -32,6 +34,8 @@ export function useArtworkSettings() {
 			spacing: values.spacing,
 			size: values.size,
 			rotation: values.rotation,
+			animate: values.animate,
+			motion: values.motion,
 			...values.tone,
 			ink,
 			paper,

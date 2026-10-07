@@ -15,6 +15,8 @@ export interface RenderSettings {
 	rotation: number;
 	scale: number;
 	invert: boolean;
+	animate: boolean;
+	motion: number;
 	ink: string;
 	paper: string;
 	transparent: boolean;
@@ -113,12 +115,18 @@ export function sourcePixels(source: HTMLCanvasElement) {
 }
 const bayer = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
 
+// Latest animation time in seconds; callers that omit `time` (export,
+// thumbnails) render the frame that is currently on screen.
+let animatedTime = 0;
+
 export function renderArt(
 	canvas: HTMLCanvasElement,
 	pixels: ImageData,
 	settings: RenderSettings,
 	size = ART_SIZE,
+	time = animatedTime,
 ) {
+	if (settings.animate) animatedTime = time;
 	if (canvas.width !== size || canvas.height !== size)
 		canvas.width = canvas.height = size;
 	const ctx = canvas.getContext("2d");
@@ -133,7 +141,12 @@ export function renderArt(
 	const cos = Math.cos(theta),
 		sin = Math.sin(theta);
 	const bound = Math.ceil((size * Math.SQRT2) / step / 2);
-	ctx.fillStyle = settings.ink;
+	// Radial ripple sweeping outward from the centre of the plate.
+	const motion = settings.animate ? settings.motion : 0;
+	const waveFreq = (Math.PI * 2) / (size * 0.65);
+	const waveSpeed = Math.PI * 2 * (0.12 + motion * 0.28);
+	const waveAmp = 0.16 * motion;
+	const marks = new Path2D();
 	ctx.save();
 	ctx.translate(size / 2, size / 2);
 	ctx.rotate(theta);
@@ -157,24 +170,33 @@ export function renderArt(
 				(1 - luminance - 0.5) * settings.contrast + 0.5 - settings.brightness,
 			);
 			if (settings.invert) density = 1 - density;
+			if (motion > 0) {
+				const wave = Math.sin(time * waveSpeed - Math.hypot(x, y) * waveFreq);
+				density = clamp(density + wave * waveAmp);
+			}
 			if (density < 0.006) continue;
 			if (settings.effect === "Dither") {
 				const threshold =
 					(bayer[(((gy % 4) + 4) % 4) * 4 + (((gx % 4) + 4) % 4)] + 0.5) / 16;
 				if (density > threshold) {
 					const s = step * settings.size;
-					ctx.fillRect(x - s / 2, y - s / 2, s, s);
+					marks.rect(x - s / 2, y - s / 2, s, s);
 				}
 			} else if (settings.effect === "Lines") {
 				const thickness = step * density * settings.size;
-				ctx.fillRect(x - step / 2, y - thickness / 2, step + 0.3, thickness);
+				marks.rect(x - step / 2, y - thickness / 2, step + 0.3, thickness);
 			} else {
 				const radius = step * 0.56 * Math.sqrt(density) * settings.size;
-				ctx.beginPath();
-				ctx.arc(x, y, radius, 0, Math.PI * 2);
-				ctx.fill();
+				// moveTo keeps each dot its own subpath; otherwise arc() would
+				// connect neighbouring dots with stray lines.
+				marks.moveTo(x + radius, y);
+				marks.arc(x, y, radius, 0, Math.PI * 2);
 			}
 		}
 	}
+	// Path2D points are transformed at draw time, so fill while the
+	// rotation/centre transform is still applied.
+	ctx.fillStyle = settings.ink;
+	ctx.fill(marks);
 	ctx.restore();
 }

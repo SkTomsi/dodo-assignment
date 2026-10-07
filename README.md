@@ -26,7 +26,7 @@ Biome uses tabs, recommended React/Next.js rules, and Tailwind CSS v4 parsing. G
 - Explore locally generated Bloom, Orbit, and Sphere samples.
 - Generate Waves, Ripple, and Mesh patterns.
 - Switch between halftone dots, 4×4 Bayer ordered dithering, and line shading.
-- Use DialKit to adjust spacing, mark size, rotation, contrast, brightness, scale, inversion, and custom colors.
+- Use DialKit to adjust spacing, mark size, rotation, contrast, brightness, scale, inversion, and custom colors, plus toggle the animated ripple and set its strength with the Animate and Motion controls.
 - Use the Color folder for transparent backgrounds; five palette presets provide quick starting points.
 - Compare the source, preview the artwork on a UI card, and export a 1024×1024 PNG. Export always contains the processed artwork, without the card's text or frame.
 
