@@ -9,8 +9,19 @@ import {
 	useState,
 } from "react";
 import useSound from "use-sound";
+import materialChimes from "@/public/sounds/material-chimes.json";
 
-export type SoundName = "click" | "toggle" | "success";
+export type SoundName =
+	| "click"
+	| "toggle"
+	| "success"
+	| keyof typeof materialChimes;
+
+const materialSprites = Object.fromEntries(
+	Object.entries(materialChimes).map(
+		([name, range]): [string, [number, number]] => [name, [range[0], range[1]]],
+	),
+);
 
 type SoundContextValue = {
 	soundOn: boolean;
@@ -28,17 +39,24 @@ export function SoundProvider({ children }: { children: ReactNode }) {
 	});
 
 	const [playClick] = useSound("/sounds/click.wav", {
-		volume: 0.4,
+		volume: 0.3,
 		interrupt: true,
 		soundEnabled: soundOn,
 	});
 	const [playToggle] = useSound("/sounds/toggle.wav", {
-		volume: 0.38,
+		volume: 0.3,
 		interrupt: true,
 		soundEnabled: soundOn,
 	});
 	const [playSuccess] = useSound("/sounds/success.wav", {
-		volume: 0.42,
+		volume: 0.32,
+		interrupt: true,
+		soundEnabled: soundOn,
+	});
+	const [playMaterial] = useSound("/sounds/material-chimes.wav", {
+		volume: 0.32,
+		interrupt: true,
+		sprite: materialSprites,
 		soundEnabled: soundOn,
 	});
 
@@ -46,9 +64,10 @@ export function SoundProvider({ children }: { children: ReactNode }) {
 		(name: SoundName) => {
 			if (name === "click") playClick();
 			else if (name === "toggle") playToggle();
-			else playSuccess();
+			else if (name === "success") playSuccess();
+			else playMaterial({ id: name });
 		},
-		[playClick, playToggle, playSuccess],
+		[playClick, playToggle, playSuccess, playMaterial],
 	);
 
 	const toggleSound = useCallback(() => {

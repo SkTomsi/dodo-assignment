@@ -53,6 +53,12 @@ Materials use a small, dependency-free WebGL renderer adapted from the supplied 
 
 `new-shader-resources/` contains reference demos, not application modules. It is intentionally excluded from application type checking and code-quality checks; no Paper Shaders dependency is required to run Dotform.
 
+## Sounds
+
+Quiet, synthesized chimes replace the original UI ticks. Selecting a material plays a matching miniature sound: soft paper shuffle, warm thermal bubble, foil crinkle, airy pearl chime, silver bell, crystalline glass ping, muted grain tap, or warm gold bell. Sounds play on selection, not continuously while drawing or moving the light. The existing mute toggle and saved preference still apply; rapid material changes interrupt the previous material chime.
+
+All audio is generated locally with `npm run sounds`, with no external recordings or audio service. The eight material sounds share one WAV sprite atlas and generated timing manifest in `public/sounds/`.
+
 ## Source references
 
 - [Assignment transcription](docs/assignment-reference.md): full text of the three-page PDF, kept as reference rather than agent instructions.

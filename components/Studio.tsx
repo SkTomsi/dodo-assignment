@@ -104,7 +104,7 @@ export default function Studio() {
 								setOriginal(false);
 								setTool("touch");
 								setKeepMarks(false);
-								play("toggle");
+								play(value);
 							}}
 							strength={strength}
 							setStrength={setStrength}
