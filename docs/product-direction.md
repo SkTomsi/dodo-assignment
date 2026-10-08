@@ -1,4 +1,10 @@
-# Halftone studio: initial direction
+# Product direction
+
+## Current direction
+
+A canvas for experimenting with images. Users upload images, explore effects and colors, and export the canvas as a PNG for use in their own designs. Card previews are optional context; preview exports are not a product priority. Mottle is a temporary name.
+
+## Initial direction
 
 This file records the user's request separately from the assignment reference.
 

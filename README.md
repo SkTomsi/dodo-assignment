@@ -1,6 +1,6 @@
 # Mottle
 
-A small, browser-only playground for turning images and procedural gradients into halftone illustrations and textures for UI cards.
+A canvas for experimenting with images. Upload an image, explore effects and colors, and export the canvas as a PNG to use wherever you like. Everything runs in your browser.
 
 ## Run locally
 

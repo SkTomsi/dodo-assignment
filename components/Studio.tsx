@@ -160,7 +160,7 @@ export default function Studio() {
 										Mottle
 									</h1>
 									<p className="text-[10px] text-text-faint">
-										A little texture goes a long way.
+										A canvas for experimenting with images.
 									</p>
 								</div>
 								<div className="flex gap-1">

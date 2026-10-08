@@ -7,9 +7,8 @@ import "./globals.css";
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-	title: "Mottle — a little texture goes a long way",
-	description:
-		"A small playground for halftones, dithers, and beautiful little textures.",
+	title: "Mottle — experiment with images",
+	description: "A canvas for experimenting with images.",
 	icons: {
 		icon: "/favicon.svg",
 	},

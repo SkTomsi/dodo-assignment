@@ -14,11 +14,11 @@ export function ControlsSidebar({
 			id="studio-controls"
 			tabIndex={-1}
 			className="sidebar scroll-mt-4 flex min-h-0 flex-col overflow-hidden rounded-xl bg-surface-muted shadow-panel"
-			aria-label="Generator controls"
+			aria-label="Image controls"
 		>
 			{header}
 			<section
-				aria-label="Scrollable generator controls"
+				aria-label="Scrollable image controls"
 				className="sidebar-scroll min-h-0 min-[900px]:flex-1 min-[900px]:overflow-x-hidden min-[900px]:overflow-y-auto min-[900px]:scroll-fade-y min-[900px]:scroll-fade-10"
 			>
 				<div className="flex min-h-full flex-col gap-4 p-4">{children}</div>
