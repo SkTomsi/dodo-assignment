@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "shadcn/tailwind.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -231,28 +232,26 @@
 	padding: 4px 0 0;
 }
 
-/* The texture box is the only scrollable column, so its scrollbar stays
-   visible as a cue that more controls sit below the fold.
-   The box must declare overflow-x explicitly: a lone overflow-y: auto
-   makes overflow-x compute to auto, and DialKit's sticky header backdrop
-   (`inset: 0 -12px`) overflows by exactly 12px, which renders a horizontal
-   scrollbar. That bleed is decorative and lands outside this box anyway,
-   so nothing reachable is clipped. */
-.texture-scroll {
-	overflow-x: hidden;
+.sidebar-scroll {
 	scrollbar-width: thin;
 	scrollbar-color: var(--color-border-strong) transparent;
+	scroll-padding-block: 40px;
 }
 
-.texture-scroll::-webkit-scrollbar {
+.sidebar-scroll:focus-visible {
+	outline: 2px solid var(--color-focus);
+	outline-offset: -2px;
+}
+
+.sidebar-scroll::-webkit-scrollbar {
 	width: 6px;
 }
 
-.texture-scroll::-webkit-scrollbar-track {
+.sidebar-scroll::-webkit-scrollbar-track {
 	background: transparent;
 }
 
-.texture-scroll::-webkit-scrollbar-thumb {
+.sidebar-scroll::-webkit-scrollbar-thumb {
 	background: var(--color-border-strong);
 	border-radius: 3px;
 }

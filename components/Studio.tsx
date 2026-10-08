@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { ArtworkCapture, Material, SurfaceTool } from "@/lib/material";
 import { useSoundFx } from "./sound-provider";
 import { ArtworkWorkspace } from "./studio/ArtworkWorkspace";
+import { ControlsSidebar } from "./studio/ControlsSidebar";
 import { EffectControls } from "./studio/EffectControls";
 import { MaterialControls } from "./studio/MaterialControls";
 import { OutputControls } from "./studio/OutputControls";
@@ -83,10 +84,7 @@ export default function Studio() {
 						onNotice={setNotice}
 						onError={setError}
 					/>
-					<aside
-						className="sidebar flex min-h-0 flex-col gap-3 overflow-y-auto rounded-[10px] border border-border bg-surface-muted p-3 shadow-panel"
-						aria-label="Generator controls"
-					>
+					<ControlsSidebar>
 						<EffectControls
 							effect={settings.effect}
 							setEffect={controls.setEffect}
@@ -123,7 +121,7 @@ export default function Studio() {
 							loading={artwork.loading}
 							exporting={exporting}
 						/>
-					</aside>
+					</ControlsSidebar>
 				</div>
 			</main>
 			<StudioNotice notice={notice} />

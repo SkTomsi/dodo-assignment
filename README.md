@@ -74,6 +74,7 @@ All audio is generated locally with `npm run sounds`, with no external recording
 - `ArtworkWorkspace.tsx` owns canvas rendering, card preview, and drag-and-drop; `WorkspaceToolbar.tsx` owns theme and sound controls.
 - `MaterialSurface.tsx` owns the print/finish/mask composition, pointer and keyboard painting, cooling, and snapshot capture. `MaterialControls.tsx` provides the material recipes and brush controls; `lib/material.ts` owns the WebGL finish renderer.
 - `EffectControls`, `SourceControls`, `TextureControls`, and `OutputControls` render the corresponding control sections.
+- `ControlsSidebar.tsx` provides one desktop scroll container for all controls, using shadcn's `scroll-fade-y` and `scroll-fade-10` utilities without replacing the existing theme or DialKit controls. The 40px edge fades use CSS scroll-driven animations without JavaScript scroll listeners; shadcn supplies static fades in browsers without scroll-driven animation support. The existing reduced-motion preference disables animations. On smaller screens, controls remain in the normal page flow without fades.
 - `usePngExport.ts` downloads an independent snapshot of the composited artwork, so preview chrome and the original comparison never affect exports.
 - `presets.ts` holds the available effects, source groups, and palettes.
 
