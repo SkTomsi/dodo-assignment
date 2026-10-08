@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { ArtworkCapture, Material, SurfaceTool } from "@/lib/material";
 import { useSoundFx } from "./sound-provider";
 import { ArtworkWorkspace } from "./studio/ArtworkWorkspace";
 import { EffectControls } from "./studio/EffectControls";
+import { MaterialControls } from "./studio/MaterialControls";
 import { OutputControls } from "./studio/OutputControls";
 import { SourceControls } from "./studio/SourceControls";
 import { StudioNotice } from "./studio/StudioNotice";
@@ -16,6 +18,13 @@ export default function Studio() {
 	const [original, setOriginal] = useState(false);
 	const [error, setError] = useState("");
 	const [notice, setNotice] = useState("");
+	const [material, setMaterial] = useState<Material>("thermal");
+	const [tool, setTool] = useState<SurfaceTool>("touch");
+	const [strength, setStrength] = useState(0.85);
+	const [brush, setBrush] = useState(70);
+	const [keepMarks, setKeepMarks] = useState(false);
+	const [clearVersion, setClearVersion] = useState(0);
+	const capture = useRef<ArtworkCapture | null>(null);
 	const { play } = useSoundFx();
 	const artwork = useArtworkSource({
 		onSelect: () => setOriginal(false),
@@ -31,12 +40,19 @@ export default function Studio() {
 		pixels: artwork.pixels,
 		settings,
 		mode: artwork.mode,
+		capture,
 		onError: setError,
 		onNotice: setNotice,
 	});
 	function reset() {
 		controls.reset();
 		setOriginal(false);
+		setMaterial("thermal");
+		setTool("touch");
+		setStrength(0.85);
+		setBrush(70);
+		setKeepMarks(false);
+		setClearVersion((version) => version + 1);
 		setNotice("Controls reset");
 	}
 	useEffect(() => {
@@ -53,6 +69,14 @@ export default function Studio() {
 						pixels={artwork.pixels}
 						title={artwork.title}
 						settings={settings}
+						material={material}
+						strength={strength}
+						brush={brush}
+						keepMarks={keepMarks}
+						clearVersion={clearVersion}
+						tool={tool}
+						setTool={setTool}
+						capture={capture}
 						original={original}
 						setOriginal={setOriginal}
 						loadFile={artwork.loadFile}
@@ -73,6 +97,23 @@ export default function Studio() {
 							dismissError={() => setError("")}
 						/>
 						<TextureControls reset={reset} />
+						<MaterialControls
+							material={material}
+							setMaterial={(value) => {
+								setMaterial(value);
+								setOriginal(false);
+								setTool("touch");
+								setKeepMarks(false);
+								play("toggle");
+							}}
+							strength={strength}
+							setStrength={setStrength}
+							brush={brush}
+							setBrush={setBrush}
+							keepMarks={keepMarks}
+							setKeepMarks={setKeepMarks}
+							clearMarks={() => setClearVersion((version) => version + 1)}
+						/>
 						<div className="min-h-[16px] flex-1" aria-hidden="true" />
 						<OutputControls
 							settings={settings}

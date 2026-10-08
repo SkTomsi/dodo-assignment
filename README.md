@@ -30,7 +30,28 @@ Biome uses tabs, recommended React/Next.js rules, and Tailwind CSS v4 parsing. G
 - Use the Color folder for transparent backgrounds; five palette presets provide quick starting points.
 - Compare the source, preview the artwork on a UI card, and export a 1024×1024 PNG. Export always contains the processed artwork, without the card's text or frame.
 
-Images are processed locally using Canvas 2D. No upload service or backend is involved. Google Fonts supplies the interface fonts, with local sans-serif fallbacks. DialKit is explicitly enabled in production.
+Images are processed locally using Canvas 2D, with optional WebGL material finishes. No upload service or backend is involved. Google Fonts supplies the interface fonts, with local sans-serif fallbacks. DialKit is explicitly enabled in production.
+
+## Touch lab
+
+The studio opens on a heat-sensitive folder. Drag across its face to warm the ink; release and it gradually cools. The Material section adds WebGL finishes independently of Halftone, Dither, and Lines:
+
+- **Paper** keeps the original print rendering.
+- **Thermal** uses painted heat values to transition the ink through amber, coral, and violet. Repeated strokes build heat; cooling reverses the color transition. **Keep marks** pauses cooling; **Clear marks** starts fresh.
+- **Holo foil** coats the full artwork in a continuous pointer-lit spectrum, without requiring any drawing.
+- **Pearl** gives the entire print a light-reactive sheen, without drawing a mask.
+- **Metal** adds brushed silver, machining lines, and directional reflections.
+- **iOS glass** is a liquid-glass-inspired shader treatment, with refraction of the artwork, soft frost, and a moving highlight. It does not blur the surrounding page or use native Apple glass APIs.
+- **Grain** adds matte pigment mottling and stable fine/coarse speckles, inspired by the supplied textured illustration.
+- **Gold** adds warm brushed metal with bronze shadows and champagne highlights.
+
+Only Thermal uses a brush and heat map. All other finishes apply to the full artwork immediately. Use **Touch** to heat thermal ink, **Light** to inspect other finishes, and **Move** to reposition the artwork on the folder. Arrow keys draw or move the light on the focused artwork; Space warms a thermal spot and Shift increases the keyboard step. The same materials work in Canvas and card previews. Thermal brush size and finish strength are adjustable. Changing source or material clears heat; changing print controls keeps it.
+
+**Export PNG** captures the finished artwork, including the material and current marks, even while comparing the original. **Export folder PNG** captures the full folder with its current artwork position. Both exports are 1024×1024 static PNGs; card chrome is not included in the artwork export.
+
+Materials use a small, dependency-free WebGL renderer adapted from the supplied shader references, with Canvas 2D for painting and compositing. Unsupported or lost WebGL contexts fall back to the original print. Idle surfaces stop drawing, hidden tabs pause, and reduced-motion users get manual light interaction and persistent thermal marks instead of automatic cooling. Everything stays local to the browser.
+
+`new-shader-resources/` contains reference demos, not application modules. It is intentionally excluded from application type checking and code-quality checks; no Paper Shaders dependency is required to run Dotform.
 
 ## Source references
 
@@ -45,13 +66,14 @@ Images are processed locally using Canvas 2D. No upload service or backend is in
 - `useArtworkSource.ts` owns sample selection, upload validation/decoding, and cached source pixels.
 - `useArtworkSettings.ts` owns DialKit configuration, effect/color settings, and reset defaults.
 - `ArtworkWorkspace.tsx` owns canvas rendering, card preview, and drag-and-drop; `WorkspaceToolbar.tsx` owns theme and sound controls.
+- `MaterialSurface.tsx` owns the print/finish/mask composition, pointer and keyboard painting, cooling, and snapshot capture. `MaterialControls.tsx` provides the material recipes and brush controls; `lib/material.ts` owns the WebGL finish renderer.
 - `EffectControls`, `SourceControls`, `TextureControls`, and `OutputControls` render the corresponding control sections.
-- `usePngExport.ts` renders an independent canvas for PNG downloads, so preview chrome and the original comparison never affect exports.
+- `usePngExport.ts` downloads an independent snapshot of the composited artwork, so preview chrome and the original comparison never affect exports.
 - `presets.ts` holds the available effects, source groups, and palettes.
 
 `lib/renderer.ts` generates procedural grayscale source fields and renders the selected texture. Source pixels are cached and redraws are coalesced with animation frames. The renderer uses a fixed output size, so high-resolution uploads do not increase interactive rendering cost.
 
-The initial renderer is Canvas 2D, not a GPU shader. Images are fitted into a square with white letterboxing before tone processing. Pattern exports are square textures, not guaranteed seamless tiles. Settings and uploaded images are kept only for the current page session.
+The print renderer remains Canvas 2D; material finishes are an optional GPU stage. Images are fitted into a square with white letterboxing before tone processing. Pattern exports are square textures, not guaranteed seamless tiles. Settings, painted marks, and uploaded images are kept only for the current page session.
 
 ## Worth exploring next
 

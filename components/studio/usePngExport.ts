@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { type RefObject, useState } from "react";
 import { useSoundFx } from "@/components/sound-provider";
+import type { ArtworkCapture } from "@/lib/material";
 import { type RenderSettings, renderArt } from "@/lib/renderer";
 
 export function usePngExport({
@@ -8,20 +9,31 @@ export function usePngExport({
 	mode,
 	onError,
 	onNotice,
+	capture,
 }: {
 	pixels: ImageData;
 	settings: RenderSettings;
 	mode: "Image" | "Pattern";
 	onError: (message: string) => void;
 	onNotice: (message: string) => void;
+	capture: RefObject<ArtworkCapture | null>;
 }) {
 	const [exporting, setExporting] = useState(false);
 	const { play } = useSoundFx();
 	function download() {
+		if (exporting) return;
 		play("click");
 		setExporting(true);
-		const output = document.createElement("canvas");
-		renderArt(output, pixels, settings);
+		let output: HTMLCanvasElement;
+		try {
+			const snapshot = capture.current?.();
+			output = snapshot ?? document.createElement("canvas");
+			if (!snapshot) renderArt(output, pixels, settings);
+		} catch {
+			setExporting(false);
+			onError("Export failed. Please try again.");
+			return;
+		}
 		output.toBlob((blob) => {
 			setExporting(false);
 			if (!blob) {

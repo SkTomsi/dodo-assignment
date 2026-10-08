@@ -1,9 +1,16 @@
 import { Upload } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { type RefObject, useEffect, useRef, useState } from "react";
 import { useSoundFx } from "@/components/sound-provider";
-import { ART_SIZE, type RenderSettings, renderArt } from "@/lib/renderer";
+import {
+	type ArtworkCapture,
+	type Material,
+	materials,
+	type SurfaceTool,
+} from "@/lib/material";
+import type { RenderSettings } from "@/lib/renderer";
 import { ArtworkPresentation, type PreviewStyle } from "./ArtworkPresentation";
 import { pickCardPlaceholder } from "./card-placeholders";
+import { MaterialSurface } from "./MaterialSurface";
 import { WorkspaceToolbar } from "./WorkspaceToolbar";
 
 export function ArtworkWorkspace({
@@ -11,6 +18,14 @@ export function ArtworkWorkspace({
 	pixels,
 	title,
 	settings,
+	material,
+	strength,
+	brush,
+	keepMarks,
+	clearVersion,
+	tool,
+	setTool,
+	capture,
 	original,
 	setOriginal,
 	loadFile,
@@ -21,6 +36,14 @@ export function ArtworkWorkspace({
 	pixels: ImageData;
 	title: string;
 	settings: RenderSettings;
+	material: Material;
+	strength: number;
+	brush: number;
+	keepMarks: boolean;
+	clearVersion: number;
+	tool: SurfaceTool;
+	setTool: (tool: SurfaceTool) => void;
+	capture: RefObject<ArtworkCapture | null>;
 	original: boolean;
 	setOriginal: (value: boolean) => void;
 	loadFile: (file?: File) => Promise<void>;
@@ -29,50 +52,10 @@ export function ArtworkWorkspace({
 }) {
 	const { effect, transparent, paper } = settings;
 	const { play } = useSoundFx();
-	const [previewStyle, setPreviewStyle] = useState<PreviewStyle>("canvas");
+	const [previewStyle, setPreviewStyle] = useState<PreviewStyle>("folder");
 	const [cardCopy, setCardCopy] = useState(() => pickCardPlaceholder());
 	const [dragging, setDragging] = useState(false);
-	const canvas = useRef<HTMLCanvasElement>(null);
 	const originalCanvas = useRef<HTMLCanvasElement>(null);
-	// Ripple time in seconds; only advances while animating so pausing
-	// (original view, reduced motion, animate off) never causes a phase jump.
-	const clock = useRef(0);
-	useEffect(() => {
-		const el = canvas.current;
-		if (!el) return;
-		const animate =
-			settings.animate &&
-			settings.motion > 0 &&
-			!original &&
-			!window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-		if (!animate) {
-			const frame = requestAnimationFrame(() =>
-				renderArt(el, pixels, settings),
-			);
-			return () => cancelAnimationFrame(frame);
-		}
-		let frame = 0;
-		let last = 0;
-		let gap = 0;
-		let prev: number | null = null;
-		const loop = (now: number) => {
-			frame = requestAnimationFrame(loop);
-			if (now - last < gap) return;
-			last = now;
-			if (prev !== null) clock.current += (now - prev) / 1000;
-			prev = now;
-			const start = performance.now();
-			renderArt(el, pixels, settings, ART_SIZE, clock.current);
-			// Back off when a full redraw is expensive (dense grids) so the
-			// ripple stays smooth instead of starving the main thread.
-			gap = Math.min(
-				250,
-				Math.max(1000 / 60, (performance.now() - start) * 1.5),
-			);
-		};
-		frame = requestAnimationFrame(loop);
-		return () => cancelAnimationFrame(frame);
-	}, [pixels, settings, original]);
 	useEffect(() => {
 		if (original && originalCanvas.current) {
 			const ctx = originalCanvas.current.getContext("2d");
@@ -99,8 +82,39 @@ export function ArtworkWorkspace({
 						setCardCopy(pickCardPlaceholder(cardCopy));
 					}
 					setPreviewStyle(style);
+					if (style !== "folder") setTool("touch");
 				}}
 			/>
+			{material !== "paper" && (
+				<div className="flex min-h-11 shrink-0 flex-wrap items-center justify-between gap-2 border-b border-border px-3 py-2">
+					<span className="text-xs text-text-muted">
+						{original
+							? "Original source"
+							: material === "thermal"
+								? "Drag to warm the ink · Arrow keys to draw"
+								: "Move to catch the light · Arrow keys to explore"}
+					</span>
+					<fieldset
+						className="flex gap-1 rounded-[5px] bg-surface-muted p-0.5"
+						aria-label="Surface tools"
+					>
+						{(["touch", "move"] as const).map((value) => (
+							<button
+								key={value}
+								type="button"
+								aria-pressed={tool === value}
+								disabled={
+									original || (value === "move" && previewStyle !== "folder")
+								}
+								onClick={() => setTool(value)}
+								className={`rounded px-3 py-1 text-xs capitalize ${tool === value ? "bg-surface text-text shadow-tab" : "text-text-muted"}`}
+							>
+								{value === "touch" && material !== "thermal" ? "Light" : value}
+							</button>
+						))}
+					</fieldset>
+				</div>
+			)}
 
 			<section
 				aria-label="Image drop area"
@@ -135,18 +149,25 @@ export function ArtworkWorkspace({
 					transparent={transparent}
 					onNotice={onNotice}
 					onError={onError}
+					capture={capture}
+					touching={material !== "paper" && tool === "touch" && !original}
 				>
 					<div
 						className={`relative overflow-hidden leading-0 ${transparent && previewStyle !== "folder" ? "bg-[conic-gradient(var(--color-check-a)_25%,var(--color-check-b)_0_50%,var(--color-check-a)_0_75%,var(--color-check-b)_0)] bg-size-[16px_16px]" : ""}`}
 						style={transparent ? undefined : { backgroundColor: paper }}
 					>
-						<canvas
-							ref={canvas}
-							width={ART_SIZE}
-							height={ART_SIZE}
-							role="img"
-							aria-label={`${effect} artwork of ${title}`}
-							className="block h-auto w-full"
+						<MaterialSurface
+							pixels={pixels}
+							settings={settings}
+							material={material}
+							strength={strength}
+							brush={brush}
+							keepMarks={keepMarks}
+							clearVersion={clearVersion}
+							tool={previewStyle === "folder" ? tool : "touch"}
+							original={original}
+							capture={capture}
+							onNotice={onNotice}
 						/>
 						{original && (
 							<canvas
@@ -182,6 +203,16 @@ export function ArtworkWorkspace({
 					{original ? "Show result" : "Show original"}
 				</button>
 				<span className="text-xs tabular-nums tracking-[0.5px]">
+					{material !== "paper" && (
+						<span className="mr-2 hidden min-[641px]:inline">
+							{materials.find((item) => item.value === material)?.label} ·{" "}
+							{material !== "thermal"
+								? "Full-surface finish"
+								: keepMarks
+									? "Marks kept"
+									: "Cooling ink"}{" "}
+						</span>
+					)}
 					1024 × 1024
 				</span>
 			</div>

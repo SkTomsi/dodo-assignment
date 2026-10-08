@@ -41,7 +41,7 @@ export function OutputControls({
 		palettes.find((p) => p.ink === ink && p.paper === paper)?.name ?? "Custom";
 	return (
 		<ControlSection
-			label="04 / OTHER"
+			label="05 / OTHER"
 			className="shrink-0"
 			extra={<span className="text-xs text-text-faint">{paletteName}</span>}
 		>

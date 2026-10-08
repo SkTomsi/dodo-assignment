@@ -7,7 +7,12 @@
 	},
 	"files": {
 		"ignoreUnknown": true,
-		"includes": ["**", "!next-env.d.ts", "!package-lock.json"]
+		"includes": [
+			"**",
+			"!next-env.d.ts",
+			"!package-lock.json",
+			"!new-shader-resources"
+		]
 	},
 	"formatter": {
 		"enabled": true,

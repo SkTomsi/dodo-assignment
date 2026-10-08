@@ -1,7 +1,14 @@
 import { ArrowUpRight, Download } from "lucide-react";
-import { type CSSProperties, type ReactNode, useRef, useState } from "react";
+import {
+	type CSSProperties,
+	type ReactNode,
+	type RefObject,
+	useRef,
+	useState,
+} from "react";
 import FolderSvg from "@/components/folder";
 import { exportFolder } from "@/lib/export-folder";
+import type { ArtworkCapture } from "@/lib/material";
 import type { CardPlaceholder } from "./card-placeholders";
 
 export const PREVIEW_STYLES = [
@@ -46,6 +53,8 @@ export function ArtworkPresentation({
 	children,
 	onNotice,
 	onError,
+	capture,
+	touching,
 }: {
 	previewStyle: PreviewStyle;
 	cardCopy: CardPlaceholder;
@@ -56,6 +65,8 @@ export function ArtworkPresentation({
 	children: ReactNode;
 	onNotice: (message: string) => void;
 	onError: (message: string) => void;
+	capture: RefObject<ArtworkCapture | null>;
+	touching: boolean;
 }) {
 	const frame = useRef<HTMLDivElement>(null);
 	const [exporting, setExporting] = useState(false);
@@ -76,8 +87,7 @@ export function ArtworkPresentation({
 		onNotice("");
 		try {
 			const svg = frame.current?.querySelector("svg");
-			const canvases = frame.current?.querySelectorAll("canvas");
-			const artwork = canvases?.[canvases.length - 1];
+			const artwork = capture.current?.();
 			if (!svg || !artwork) throw new Error("Artwork is not ready.");
 			const blob = await exportFolder({
 				svg,
@@ -132,11 +142,11 @@ export function ArtworkPresentation({
 				>
 					{children}
 				</div>
-				{previewStyle === "folder" && (
+				{previewStyle === "folder" && !touching && (
 					<button
 						type="button"
-						aria-label="Folder. Drag or use arrow keys to move the image. Shift moves faster. Home resets position."
-						title="Drag to reposition · Arrow keys to nudge · Home to reset"
+						aria-label="Folder. Drag or use arrow keys to move the image. Shift moves faster. Enter resets position."
+						title="Drag to reposition · Arrow keys to nudge · Enter to reset"
 						className={`absolute inset-0 touch-none rounded-[14px] bg-transparent active:transform-none focus-visible:outline-2 focus-visible:outline-offset-4 ${dragging ? "cursor-grabbing" : "cursor-grab"}`}
 						onPointerDown={(event) => {
 							if (!event.isPrimary || event.button !== 0 || drag.current)
@@ -251,7 +261,7 @@ export function ArtworkPresentation({
 						>
 							← ↑ ↓ →
 						</kbd>
-						Move
+						{touching ? "Explore" : "Move"}
 					</span>
 					<span className="flex items-center gap-1.5">
 						<kbd className="rounded border border-border bg-surface-muted px-1.5 py-0.5 font-mono text-[10px] text-text">
@@ -265,9 +275,11 @@ export function ArtworkPresentation({
 						onClick={() => setPosition({ x: 0, y: 0 })}
 						aria-label="Reset folder image position"
 					>
-						<kbd className="rounded border border-border bg-surface-muted px-1.5 py-0.5 font-mono text-[10px] text-text">
-							Enter
-						</kbd>
+						{!touching && (
+							<kbd className="rounded border border-border bg-surface-muted px-1.5 py-0.5 font-mono text-[10px] text-text">
+								Enter
+							</kbd>
+						)}
 						Center
 					</button>
 					<button
