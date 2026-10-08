@@ -1,3 +1,4 @@
+import { SoundButton } from "@/components/ui/SoundButton";
 import { type Material, materials } from "@/lib/material";
 import { ControlSection } from "./ControlSection";
 
@@ -34,8 +35,9 @@ export function MaterialControls({
 		>
 			<div className="grid grid-cols-4 gap-1.5">
 				{materials.map((item) => (
-					<button
+					<SoundButton
 						key={item.value}
+						sound={item.value}
 						type="button"
 						aria-pressed={material === item.value}
 						onClick={() => setMaterial(item.value)}
@@ -47,7 +49,7 @@ export function MaterialControls({
 							style={{ background: item.color }}
 						/>
 						{item.label}
-					</button>
+					</SoundButton>
 				))}
 			</div>
 			<p className="mt-2.5 text-xs leading-relaxed text-text-muted">
@@ -93,23 +95,24 @@ export function MaterialControls({
 							</label>
 							<div className="flex items-center justify-between gap-2">
 								{
-									<button
+									<SoundButton
 										type="button"
 										role="switch"
+										sound="toggle"
 										aria-checked={keepMarks}
 										onClick={() => setKeepMarks(!keepMarks)}
 										className="rounded px-1 py-1.5 text-xs text-text-muted hover:bg-surface-hover"
 									>
 										{keepMarks ? "●" : "○"} Keep marks
-									</button>
+									</SoundButton>
 								}
-								<button
+								<SoundButton
 									type="button"
 									onClick={clearMarks}
 									className="rounded border border-border px-2 py-1.5 text-xs text-text-muted hover:bg-surface-hover"
 								>
 									Clear marks
-								</button>
+								</SoundButton>
 							</div>
 						</>
 					)}

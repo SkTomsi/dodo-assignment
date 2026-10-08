@@ -1,6 +1,6 @@
 import { Upload } from "lucide-react";
 import { type RefObject, useEffect, useRef, useState } from "react";
-import { useSoundFx } from "@/components/sound-provider";
+import { SoundButton } from "@/components/ui/SoundButton";
 import { type ExportOptions, exportRatios } from "@/lib/export-artwork";
 import {
 	type ArtworkCapture,
@@ -54,7 +54,6 @@ export function ArtworkWorkspace({
 	onError: (message: string) => void;
 }) {
 	const { effect, transparent, paper } = settings;
-	const { play } = useSoundFx();
 	const [previewStyle, setPreviewStyle] = useState<PreviewStyle>("folder");
 	const [cardCopy, setCardCopy] = useState(() => pickCardPlaceholder());
 	const [dragging, setDragging] = useState(false);
@@ -186,17 +185,17 @@ export function ArtworkWorkspace({
 			</section>
 
 			<div className="flex h-12 shrink-0 items-center justify-between gap-3 px-4 text-xs text-text-faint min-[641px]:px-5">
-				<button
+				<SoundButton
 					type="button"
 					onClick={() => {
 						setOriginal(!original);
-						play("toggle");
 					}}
 					aria-pressed={original}
+					sound="toggle"
 					className="-ml-1.5 rounded-[5px] px-1.5 py-1.5 text-xs text-text-muted hover:bg-surface-hover"
 				>
 					{original ? "Show result" : "Show original"}
-				</button>
+				</SoundButton>
 				<span className="text-xs tabular-nums tracking-[0.5px]">
 					{material !== "paper" && (
 						<span className="mr-2 hidden min-[641px]:inline">

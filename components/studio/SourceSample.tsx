@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { SoundButton } from "@/components/ui/SoundButton";
 import {
 	createSource,
 	renderArt,
@@ -43,7 +44,7 @@ export function SourceSample({
 		);
 	}, [name]);
 	return (
-		<button
+		<SoundButton
 			type="button"
 			className={`relative flex min-w-0 flex-1 flex-col overflow-hidden rounded-[6px] border bg-surface ${
 				selected
@@ -71,6 +72,6 @@ export function SourceSample({
 					<Check size={10} />
 				</span>
 			)}
-		</button>
+		</SoundButton>
 	);
 }

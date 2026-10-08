@@ -14,6 +14,7 @@ import materialChimes from "@/public/sounds/material-chimes.json";
 export type SoundName =
 	| "click"
 	| "toggle"
+	| "switch-on"
 	| "success"
 	| keyof typeof materialChimes;
 
@@ -53,6 +54,11 @@ export function SoundProvider({ children }: { children: ReactNode }) {
 		interrupt: true,
 		soundEnabled: soundOn,
 	});
+	const [playSwitchOn] = useSound("/sounds/switch-on.mp3", {
+		volume: 0.3,
+		interrupt: true,
+		soundEnabled: soundOn,
+	});
 	const [playMaterial] = useSound("/sounds/material-chimes.wav", {
 		volume: 0.32,
 		interrupt: true,
@@ -65,9 +71,10 @@ export function SoundProvider({ children }: { children: ReactNode }) {
 			if (name === "click") playClick();
 			else if (name === "toggle") playToggle();
 			else if (name === "success") playSuccess();
+			else if (name === "switch-on") playSwitchOn();
 			else playMaterial({ id: name });
 		},
-		[playClick, playToggle, playSuccess, playMaterial],
+		[playClick, playToggle, playSuccess, playSwitchOn, playMaterial],
 	);
 
 	const toggleSound = useCallback(() => {

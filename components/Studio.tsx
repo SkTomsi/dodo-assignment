@@ -203,10 +203,7 @@ export default function Studio() {
 								</summary>
 								<LooksControls
 									current={recipe}
-									apply={(next) => {
-										recipes.select(next);
-										play("click");
-									}}
+									apply={recipes.select}
 									recipes={recipes}
 								/>
 							</details>
@@ -222,7 +219,6 @@ export default function Studio() {
 								setOriginal(false);
 								setTool("touch");
 								setKeepMarks(false);
-								play(value);
 							}}
 							strength={strength}
 							setStrength={setStrength}

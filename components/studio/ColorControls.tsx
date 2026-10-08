@@ -1,4 +1,4 @@
-import { useSoundFx } from "@/components/sound-provider";
+import { SoundButton } from "@/components/ui/SoundButton";
 import type { RenderSettings } from "@/lib/renderer";
 import { ControlSection } from "./ControlSection";
 import { palettes } from "./presets";
@@ -29,7 +29,6 @@ export function ColorControls({
 	toggleTransparent: () => void;
 }) {
 	const { ink, paper, transparent } = settings;
-	const { play } = useSoundFx();
 	const paletteName =
 		palettes.find((p) => p.ink === ink && p.paper === paper)?.name ?? "Custom";
 	return (
@@ -42,7 +41,7 @@ export function ColorControls({
 				{palettes.map((palette) => {
 					const selected = ink === palette.ink && paper === palette.paper;
 					return (
-						<button
+						<SoundButton
 							type="button"
 							key={palette.name}
 							className={`h-[30px] min-w-0 flex-1 place-items-center rounded-[5px] border border-border hover:-translate-y-0.5 ${
@@ -51,7 +50,6 @@ export function ColorControls({
 									: ""
 							}`}
 							onClick={() => {
-								play("click");
 								choosePalette(palette);
 							}}
 							aria-label={`${palette.name} palette`}
@@ -63,24 +61,24 @@ export function ColorControls({
 								className="mx-auto block size-3.5 rounded-full"
 								style={{ background: palette.ink }}
 							/>
-						</button>
+						</SoundButton>
 					);
 				})}
 			</div>
 
-			<button
+			<SoundButton
 				type="button"
 				role="switch"
+				sound="toggle"
 				aria-checked={transparent}
 				onClick={() => {
 					toggleTransparent();
-					play("toggle");
 				}}
 				className="mt-2.5 flex w-full items-center justify-between rounded-[5px] px-1.5 py-1.5 text-sm text-text-muted hover:bg-surface-hover"
 			>
 				<span>Transparent background</span>
 				<Switch on={transparent} />
-			</button>
+			</SoundButton>
 
 			<div className="mt-3 grid grid-cols-2 gap-3">
 				{(["ink", "paper"] as const).map((color) => (

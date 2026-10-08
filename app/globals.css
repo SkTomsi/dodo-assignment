@@ -65,7 +65,7 @@
 	--color-surface: oklch(21% 0 0);
 	--color-surface-muted: oklch(24% 0 0);
 	--color-surface-hover: oklch(28% 0 0);
-	--color-surface-active: oklch(0.248 0 0);
+	--color-surface-active: oklch(28% 0 0);
 
 	--color-border: oklch(0.301 0 0);
 	--color-border-strong: oklch(0.39 0 0);

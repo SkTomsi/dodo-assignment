@@ -1,6 +1,7 @@
 import { Upload, X } from "lucide-react";
 import { type ReactNode, useRef } from "react";
-import { useSoundFx } from "@/components/sound-provider";
+import { SegmentedControl } from "@/components/ui/SegmentedControl";
+import { SoundButton } from "@/components/ui/SoundButton";
 import { ControlSection } from "./ControlSection";
 import { SourceSample } from "./SourceSample";
 import type { ArtworkSource } from "./useArtworkSource";
@@ -27,32 +28,21 @@ export function SourceControls({
 		chooseSample,
 	} = artwork;
 	const input = useRef<HTMLInputElement>(null);
-	const { play } = useSoundFx();
 	return (
 		<ControlSection label="01 / SOURCE" className="shrink-0">
-			<div className="mb-2.5 flex rounded-[6px] bg-surface-muted p-[3px]">
-				{(["Image", "Pattern"] as const).map((item) => (
-					<button
-						type="button"
-						key={item}
-						onClick={() => {
-							chooseMode(item);
-							play("click");
-						}}
-						className={`flex-1 rounded-[4px] px-2 py-[6px] text-sm ${
-							mode === item
-								? "bg-surface text-text shadow-tab"
-								: "text-text-faint"
-						}`}
-						aria-pressed={mode === item}
-					>
-						{item}
-					</button>
-				))}
-			</div>
+			<SegmentedControl
+				label="Source mode"
+				value={mode}
+				onChange={chooseMode}
+				options={(["Image", "Pattern"] as const).map((value) => ({
+					value,
+					label: value,
+				}))}
+				className="mb-2.5"
+			/>
 			<div className="flex items-stretch gap-2">
 				{mode === "Image" && (
-					<button
+					<SoundButton
 						type="button"
 						className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1.5 rounded-[6px] border border-dashed text-text-faint hover:bg-surface-hover ${
 							useUpload
@@ -62,7 +52,6 @@ export function SourceControls({
 						disabled={loading}
 						onClick={() => {
 							input.current?.click();
-							play("click");
 						}}
 						aria-pressed={useUpload}
 					>
@@ -70,7 +59,7 @@ export function SourceControls({
 						<span className="truncate px-1 text-xs">
 							{loading ? "Reading…" : "Upload"}
 						</span>
-					</button>
+					</SoundButton>
 				)}
 				{samples.map((name) => (
 					<SourceSample
@@ -78,7 +67,6 @@ export function SourceControls({
 						name={name}
 						selected={!useUpload && sample === name}
 						onClick={() => {
-							play("click");
 							chooseSample(name);
 						}}
 					/>
@@ -93,17 +81,16 @@ export function SourceControls({
 					role="alert"
 				>
 					<span className="min-w-0 flex-1">{error}</span>
-					<button
+					<SoundButton
 						type="button"
 						aria-label="Dismiss error"
 						onClick={() => {
 							dismissError();
-							play("click");
 						}}
 						className="shrink-0 text-text-faint"
 					>
 						<X size={12} />
-					</button>
+					</SoundButton>
 				</div>
 			)}
 			<input
