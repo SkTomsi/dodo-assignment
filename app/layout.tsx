@@ -7,7 +7,7 @@ import "./globals.css";
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-	title: "Dotform — a little texture goes a long way",
+	title: "Mottle — a little texture goes a long way",
 	description:
 		"A small playground for halftones, dithers, and beautiful little textures.",
 	icons: {

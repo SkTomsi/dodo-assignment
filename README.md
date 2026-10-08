@@ -1,4 +1,4 @@
-# Dotform
+# Mottle
 
 A small, browser-only playground for turning images and procedural gradients into halftone illustrations and textures for UI cards.
 
@@ -61,7 +61,7 @@ Only Thermal uses a brush and heat map. All other finishes apply to the full art
 
 Materials use a small, dependency-free WebGL renderer adapted from the supplied shader references, with Canvas 2D for painting and compositing. Unsupported or lost WebGL contexts fall back to the original print. Idle surfaces stop drawing, hidden tabs pause, and reduced-motion users get manual light interaction and persistent thermal marks instead of automatic cooling. Everything stays local to the browser.
 
-`new-shader-resources/` contains reference demos, not application modules. It is intentionally excluded from application type checking and code-quality checks; no Paper Shaders dependency is required to run Dotform.
+`new-shader-resources/` contains reference demos, not application modules. It is intentionally excluded from application type checking and code-quality checks; no Paper Shaders dependency is required to run Mottle.
 
 ## Sounds
 

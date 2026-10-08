@@ -29,7 +29,7 @@ export function Select<T extends string | number>({
 			{icon && (
 				<span
 					aria-hidden="true"
-					className="pointer-events-none absolute left-3 text-text-muted"
+					className="pointer-events-none absolute left-3 hidden text-text-muted min-[900px]:block"
 				>
 					{icon}
 				</span>
@@ -46,7 +46,7 @@ export function Select<T extends string | number>({
 					onChange(option.value);
 					play("click");
 				}}
-				className={`w-full cursor-pointer appearance-none bg-surface-muted pr-8 text-xs text-text hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-40 ${icon ? "pl-9" : "pl-2"} ${variant === "toolbar" ? "h-10 rounded-lg py-2 font-medium" : "h-9 rounded-md border border-border"}`}
+				className={`studio-select w-full cursor-pointer appearance-none bg-surface-muted pr-8 text-xs text-text hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-40 ${icon ? "pl-2 min-[900px]:pl-9" : "pl-2"} ${variant === "toolbar" ? "h-10 rounded-lg py-2 font-medium" : "h-9 rounded-md border border-border"}`}
 			>
 				{options.map((option) => (
 					<option

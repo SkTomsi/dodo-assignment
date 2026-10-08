@@ -64,7 +64,7 @@
 	--color-bg: oklch(19% 0 0);
 	--color-surface: oklch(21% 0 0);
 	--color-surface-muted: oklch(24% 0 0);
-	--color-surface-hover: oklch(28% 0 0);
+	--color-surface-hover: oklch(27% 0 0);
 	--color-surface-active: oklch(28% 0 0);
 
 	--color-border: oklch(0.301 0 0);
@@ -132,7 +132,9 @@
 
 	button,
 	a,
-	input {
+	input,
+	select,
+	summary {
 		-webkit-tap-highlight-color: transparent;
 	}
 
@@ -148,22 +150,27 @@
 			color 150ms ease;
 	}
 
-	button:active {
+	button:active:not(:disabled):not(:focus-visible) {
 		transform: scale(0.97);
 	}
 
 	button:disabled {
-		cursor: wait;
+		cursor: not-allowed;
 		opacity: 0.6;
 	}
 
 	button:focus-visible,
-	a:focus-visible {
+	a:focus-visible,
+	input:focus-visible,
+	select:focus-visible,
+	summary:focus-visible {
 		outline: 2px solid var(--color-focus);
 		outline-offset: 4px;
 	}
 
-	button:focus-visible {
+	button:focus-visible,
+	select:focus-visible,
+	body:has(button:focus-visible) {
 		transition: none;
 	}
 
@@ -266,4 +273,94 @@
 .sidebar .dialkit-toggle-label,
 .sidebar .dialkit-folder-title {
 	font-size: var(--text-xs);
+}
+
+/* Shared selectors: brief pointer feedback, immediate keyboard selection. */
+.segmented-option::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	border-radius: inherit;
+	background: var(--color-surface);
+	box-shadow: var(--shadow-tab);
+	opacity: 0;
+	transition: opacity 140ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.segmented-option[aria-checked="true"]::before {
+	opacity: 1;
+}
+
+.segmented-control[data-variant="plain"] .segmented-option::before {
+	inset: auto 0 -4px;
+	height: 2px;
+	background: currentColor;
+	box-shadow: none;
+}
+
+.segmented-control[data-input="keyboard"] .segmented-option,
+.segmented-control[data-input="keyboard"] .segmented-option::before {
+	transition: none;
+}
+
+.segmented-option:focus-visible {
+	z-index: 1;
+	outline-offset: 2px;
+}
+
+.studio-select {
+	transition: background-color 140ms ease;
+}
+
+.studio-select:focus-visible {
+	transition: none;
+}
+
+/* Keep the canvas, adjustments and PNG settings within reach on small screens. */
+@media (max-width: 899px) {
+	.studio-main {
+		padding-bottom: calc(88px + env(safe-area-inset-bottom));
+	}
+
+	.mobile-navigation {
+		padding-bottom: calc(8px + env(safe-area-inset-bottom));
+	}
+
+	.studio-main button,
+	.studio-main summary,
+	.studio-select {
+		min-height: 44px;
+	}
+
+	.workspace-toolbar .sound-button {
+		min-width: 44px;
+	}
+
+	.segmented-control[data-variant="toolbar"] {
+		height: auto;
+	}
+
+	.studio-select,
+	.studio-main
+		input:not([type="range"]):not([type="color"]):not([type="file"]) {
+		font-size: 16px;
+	}
+
+	.studio-main input[type="color"] {
+		min-height: 44px;
+		min-width: 44px;
+	}
+
+	.studio-main input[type="range"] {
+		min-height: 32px;
+	}
+
+	.sidebar .dialkit-root[data-theme] {
+		--dial-row-height: 44px;
+	}
+
+	.studio-main summary {
+		padding-block: 12px;
+	}
 }

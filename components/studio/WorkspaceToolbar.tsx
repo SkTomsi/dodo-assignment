@@ -58,7 +58,7 @@ export function WorkspaceToolbar({
 			);
 	}, [resolvedTheme]);
 	return (
-		<header className="grid shrink-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3 p-4 min-[641px]:px-5 min-[1100px]:grid-cols-[minmax(0,1fr)_auto_auto]">
+		<header className="workspace-toolbar grid shrink-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3 p-4 min-[641px]:px-5 min-[1100px]:grid-cols-[minmax(0,1fr)_auto_auto]">
 			<div className="min-w-0">
 				<div className="flex items-center gap-2 text-xs font-medium tracking-[1px] text-text-muted uppercase">
 					<span className="size-1.5 shrink-0 rounded-full bg-chip" />

@@ -69,7 +69,9 @@ export function ArtworkWorkspace({
 
 	return (
 		<section
-			className="flex min-h-0 flex-col overflow-hidden rounded-xl bg-surface shadow-panel"
+			id="studio-preview"
+			tabIndex={-1}
+			className="scroll-mt-4 flex min-h-0 flex-col overflow-hidden rounded-xl bg-surface shadow-panel"
 			aria-label="Artwork workspace"
 		>
 			<WorkspaceToolbar
@@ -94,7 +96,9 @@ export function ArtworkWorkspace({
 			<section
 				aria-label="Image drop area"
 				className={`relative flex items-center justify-center overflow-hidden bg-surface-muted p-6 min-[641px]:p-8 aspect-square min-[900px]:aspect-auto min-[900px]:min-h-0 min-[900px]:flex-1 ${
-					previewStyle !== "canvas" ? "min-h-[500px]" : ""
+					previewStyle !== "canvas"
+						? "min-h-[360px] min-[641px]:min-h-[500px]"
+						: ""
 				}`}
 				onDragOver={(event) => {
 					event.preventDefault();

@@ -52,7 +52,7 @@ export function usePngExport({
 			const link = document.createElement("a");
 			link.href = url;
 			const { width, height } = exportDimensions(options);
-			link.download = `dotform-${settings.effect.toLowerCase()}-${mode.toLowerCase()}-${width}x${height}.png`;
+			link.download = `mottle-${settings.effect.toLowerCase()}-${mode.toLowerCase()}-${width}x${height}.png`;
 			link.click();
 			setTimeout(() => URL.revokeObjectURL(url), 1000);
 			onNotice(`Artwork exported · ${width} × ${height} PNG`);

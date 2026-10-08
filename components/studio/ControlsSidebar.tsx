@@ -11,7 +11,9 @@ export function ControlsSidebar({
 }) {
 	return (
 		<aside
-			className="sidebar flex min-h-0 flex-col overflow-hidden rounded-xl bg-surface-muted shadow-panel"
+			id="studio-controls"
+			tabIndex={-1}
+			className="sidebar scroll-mt-4 flex min-h-0 flex-col overflow-hidden rounded-xl bg-surface-muted shadow-panel"
 			aria-label="Generator controls"
 		>
 			{header}

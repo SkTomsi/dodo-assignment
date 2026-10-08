@@ -22,8 +22,10 @@ export function OutputControls({
 	const { width, height } = exportDimensions(options);
 	return (
 		<section
+			id="studio-export"
+			tabIndex={-1}
 			aria-label="Artwork export"
-			className="border-t border-border bg-surface p-4"
+			className="scroll-mt-4 border-t border-border bg-surface p-4"
 		>
 			<div className="mb-3 flex items-center justify-between">
 				<span className="text-xs font-semibold tracking-[1.5px] text-text-faint">
@@ -33,7 +35,7 @@ export function OutputControls({
 					{width} × {height}
 				</span>
 			</div>
-			<div className="mb-3 grid grid-cols-[1fr_92px] gap-2 text-xs text-text">
+			<div className="mb-3 grid grid-cols-1 min-[361px]:grid-cols-[minmax(0,1fr)_104px] min-[900px]:grid-cols-[1fr_92px] gap-2 text-xs text-text">
 				<Select
 					label="Export aspect ratio"
 					value={options.ratio}
@@ -55,6 +57,7 @@ export function OutputControls({
 				className="flex w-full items-center justify-center gap-2 rounded-md bg-cta px-3 py-2.5 text-sm text-cta-text shadow-panel hover:bg-cta-hover"
 				onClick={download}
 				disabled={loading || exporting}
+				aria-busy={exporting}
 			>
 				<ArrowDownToLine size={15} />
 				{exporting ? "Exporting…" : "Export artwork PNG"}

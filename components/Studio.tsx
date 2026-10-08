@@ -12,6 +12,7 @@ import { EffectControls } from "./studio/EffectControls";
 import { LooksControls } from "./studio/LooksControls";
 import type { StudioRecipe } from "./studio/looks";
 import { MaterialControls } from "./studio/MaterialControls";
+import { MobileNavigation } from "./studio/MobileNavigation";
 import { OutputControls } from "./studio/OutputControls";
 import { SourceControls } from "./studio/SourceControls";
 import { StudioNotice } from "./studio/StudioNotice";
@@ -20,6 +21,7 @@ import { useArtworkSettings } from "./studio/useArtworkSettings";
 import { useArtworkSource } from "./studio/useArtworkSource";
 import { usePngExport } from "./studio/usePngExport";
 import { useStudioRecipes } from "./studio/useStudioRecipes";
+import { SoundButton } from "./ui/SoundButton";
 
 export default function Studio() {
 	const [original, setOriginal] = useState(false);
@@ -82,14 +84,17 @@ export default function Studio() {
 		function keyboard(event: KeyboardEvent) {
 			const target = event.target as HTMLElement;
 			if (
-				target.closest(
-					"input, textarea, select, [contenteditable=true], [role=slider]",
-				) ||
+				target.closest("input, textarea, select, [role=slider]") ||
+				target.isContentEditable ||
 				!(event.metaKey || event.ctrlKey) ||
 				event.altKey
 			)
 				return;
-			if (event.key.toLowerCase() === "z") {
+			if (event.defaultPrevented) return;
+			if (event.key.toLowerCase() === "y" && event.ctrlKey && !event.shiftKey) {
+				event.preventDefault();
+				recipes.redo();
+			} else if (event.key.toLowerCase() === "z") {
 				event.preventDefault();
 				if (event.shiftKey) recipes.redo();
 				else recipes.undo();
@@ -125,7 +130,7 @@ export default function Studio() {
 	}, [notice]);
 	return (
 		<div className="min-h-dvh bg-bg">
-			<main className="mx-auto max-w-[1360px] px-4 py-4 min-[641px]:px-6 min-[900px]:h-dvh min-[900px]:py-6">
+			<main className="studio-main mx-auto max-w-[1360px] px-4 py-4 min-[641px]:px-6 min-[900px]:h-dvh min-[900px]:py-6">
 				<div className="grid grid-cols-1 gap-6 min-[900px]:h-full min-[900px]:grid-cols-[minmax(0,1fr)_320px] min-[1200px]:gap-7 min-[1200px]:grid-cols-[minmax(0,1fr)_344px]">
 					<ArtworkWorkspace
 						source={artwork.source}
@@ -152,33 +157,35 @@ export default function Studio() {
 							<div className="flex shrink-0 items-center justify-between border-b border-border px-4 py-3">
 								<div>
 									<h1 className="font-display text-lg font-semibold tracking-tight text-text">
-										Dotform
+										Mottle
 									</h1>
 									<p className="text-[10px] text-text-faint">
 										A little texture goes a long way.
 									</p>
 								</div>
 								<div className="flex gap-1">
-									<button
+									<SoundButton
 										type="button"
 										aria-label="Undo"
+										aria-keyshortcuts="Meta+z Control+z"
 										title="Undo · ⌘/Ctrl Z"
 										disabled={!recipes.canUndo}
 										onClick={recipes.undo}
 										className="rounded-md p-2 text-text-muted hover:bg-surface-hover disabled:opacity-30"
 									>
 										<Undo2 size={16} />
-									</button>
-									<button
+									</SoundButton>
+									<SoundButton
 										type="button"
 										aria-label="Redo"
+										aria-keyshortcuts="Meta+Shift+z Control+Shift+z Control+y"
 										title="Redo · ⌘/Ctrl Shift Z"
 										disabled={!recipes.canRedo}
 										onClick={recipes.redo}
 										className="rounded-md p-2 text-text-muted hover:bg-surface-hover disabled:opacity-30"
 									>
 										<Redo2 size={16} />
-									</button>
+									</SoundButton>
 								</div>
 							</div>
 						}
@@ -237,6 +244,7 @@ export default function Studio() {
 					</ControlsSidebar>
 				</div>
 			</main>
+			<MobileNavigation />
 			<StudioNotice notice={notice} />
 		</div>
 	);

@@ -102,7 +102,7 @@ export function ArtworkPresentation({
 			const url = URL.createObjectURL(blob);
 			const link = document.createElement("a");
 			link.href = url;
-			link.download = `dotform-folder-${effect.toLowerCase()}-${exportSize}x${exportSize}.png`;
+			link.download = `mottle-folder-${effect.toLowerCase()}-${exportSize}x${exportSize}.png`;
 			link.click();
 			setTimeout(() => URL.revokeObjectURL(url), 1000);
 			onNotice(`Folder exported · ${exportSize} × ${exportSize} PNG`);
@@ -257,17 +257,17 @@ export function ArtworkPresentation({
 					aria-label="Folder keyboard shortcuts"
 					className="absolute inset-x-4 bottom-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 rounded-lg border border-border bg-surface px-2 py-2 text-[10px] text-text-muted shadow-panel w-fit mx-auto"
 				>
-					<span className="flex items-center gap-1.5">
+					<span className="hidden items-center gap-1.5 min-[641px]:flex">
 						<kbd
-							className="rounded border border-border bg-surface-muted px-1.5 py-0.5 font-mono text-[10px] text-text"
+							className="hidden rounded border border-border bg-surface-muted px-1.5 py-0.5 font-mono text-[10px] text-text min-[641px]:inline"
 							aria-label="Arrow keys"
 						>
 							← ↑ ↓ →
 						</kbd>
 						{touching ? "Explore" : "Move"}
 					</span>
-					<span className="flex items-center gap-1.5">
-						<kbd className="rounded border border-border bg-surface-muted px-1.5 py-0.5 font-mono text-[10px] text-text">
+					<span className="hidden items-center gap-1.5 min-[641px]:flex">
+						<kbd className="hidden rounded border border-border bg-surface-muted px-1.5 py-0.5 font-mono text-[10px] text-text min-[641px]:inline">
 							Shift
 						</kbd>
 						+ arrows · Faster
@@ -279,7 +279,7 @@ export function ArtworkPresentation({
 						aria-label="Reset folder image position"
 					>
 						{!touching && (
-							<kbd className="rounded border border-border bg-surface-muted px-1.5 py-0.5 font-mono text-[10px] text-text">
+							<kbd className="hidden rounded border border-border bg-surface-muted px-1.5 py-0.5 font-mono text-[10px] text-text min-[641px]:inline">
 								Enter
 							</kbd>
 						)}

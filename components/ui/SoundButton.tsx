@@ -7,6 +7,7 @@ export function SoundButton({
 	sound = "click",
 	onClick,
 	type = "button",
+	className = "",
 	...props
 }: ComponentProps<"button"> & { sound?: SoundName | false }) {
 	const { play } = useSoundFx();
@@ -14,6 +15,7 @@ export function SoundButton({
 		<button
 			{...props}
 			type={type}
+			className={`sound-button ${className}`}
 			onClick={(event) => {
 				onClick?.(event);
 				if (sound && !event.defaultPrevented) play(sound);
