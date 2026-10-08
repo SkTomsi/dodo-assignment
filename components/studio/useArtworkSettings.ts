@@ -7,14 +7,14 @@ const config = {
 	spacing: [9, 3, 24, 1],
 	size: [0.9, 0.3, 1.4, 0.01],
 	rotation: [0, -90, 90, 1],
-	animate: true,
+	animate: true as boolean,
 	motion: [0.7, 0, 1.5, 0.05],
 	tone: {
 		_collapsed: false,
 		contrast: [1.15, 0.3, 2.5, 0.05],
 		brightness: [0, -0.4, 0.4, 0.01],
 		scale: [1, 0.5, 2, 0.01],
-		invert: false,
+		invert: false as boolean,
 	},
 } satisfies DialConfig;
 
@@ -55,10 +55,30 @@ export function useArtworkSettings() {
 		setInk(palette.ink);
 		setPaper(palette.paper);
 	}
+	function apply(settings: RenderSettings) {
+		setEffect(settings.effect);
+		setInk(settings.ink);
+		setPaper(settings.paper);
+		setTransparent(settings.transparent);
+		dial.setValues({
+			spacing: settings.spacing,
+			size: settings.size,
+			rotation: settings.rotation,
+			animate: settings.animate,
+			motion: settings.motion,
+			tone: {
+				contrast: settings.contrast,
+				brightness: settings.brightness,
+				scale: settings.scale,
+				invert: settings.invert,
+			},
+		});
+	}
 	return {
 		settings,
 		setEffect,
 		choosePalette,
+		apply,
 		toggleTransparent: () => setTransparent((value) => !value),
 		reset,
 	};

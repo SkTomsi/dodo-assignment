@@ -9,9 +9,15 @@ export function TextureControls({ reset }: { reset: () => void }) {
 	const isDark = resolvedTheme === "dark";
 	const { play } = useSoundFx();
 	return (
-		<section className="flex min-h-[200px] shrink-0 flex-col rounded-[10px] bg-surface p-4">
-			<div className="mb-4 flex min-h-[14px] shrink-0 items-center justify-between text-text-faint">
-				<span className={sectionLabel}>03 / TEXTURE</span>
+		<details className="shrink-0 rounded-[10px] bg-surface p-4">
+			<summary className="cursor-pointer text-xs font-semibold tracking-[1.5px] text-text-faint">
+				04 / TEXTURE{" "}
+				<span className="float-right text-[10px] font-normal tracking-normal">
+					Fine-tune
+				</span>
+			</summary>
+			<div className="mb-3 mt-4 flex min-h-[14px] shrink-0 items-center justify-between text-text-faint">
+				<span className={sectionLabel}>PRINT CONTROLS</span>
 				<button
 					type="button"
 					className="-mr-1 rounded-[4px] p-1 text-text-faint hover:bg-surface-hover"
@@ -33,6 +39,6 @@ export function TextureControls({ reset }: { reset: () => void }) {
 					productionEnabled
 				/>
 			</div>
-		</section>
+		</details>
 	);
 }

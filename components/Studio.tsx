@@ -1,11 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Redo2, Undo2 } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { ExportOptions } from "@/lib/export-artwork";
 import type { ArtworkCapture, Material, SurfaceTool } from "@/lib/material";
 import { useSoundFx } from "./sound-provider";
 import { ArtworkWorkspace } from "./studio/ArtworkWorkspace";
+import { ColorControls } from "./studio/ColorControls";
 import { ControlsSidebar } from "./studio/ControlsSidebar";
 import { EffectControls } from "./studio/EffectControls";
+import { LooksControls } from "./studio/LooksControls";
+import type { StudioRecipe } from "./studio/looks";
 import { MaterialControls } from "./studio/MaterialControls";
 import { OutputControls } from "./studio/OutputControls";
 import { SourceControls } from "./studio/SourceControls";
@@ -14,6 +19,7 @@ import { TextureControls } from "./studio/TextureControls";
 import { useArtworkSettings } from "./studio/useArtworkSettings";
 import { useArtworkSource } from "./studio/useArtworkSource";
 import { usePngExport } from "./studio/usePngExport";
+import { useStudioRecipes } from "./studio/useStudioRecipes";
 
 export default function Studio() {
 	const [original, setOriginal] = useState(false);
@@ -25,6 +31,10 @@ export default function Studio() {
 	const [brush, setBrush] = useState(70);
 	const [keepMarks, setKeepMarks] = useState(false);
 	const [clearVersion, setClearVersion] = useState(0);
+	const [exportOptions, setExportOptions] = useState<ExportOptions>({
+		size: 1024,
+		ratio: "square",
+	});
 	const capture = useRef<ArtworkCapture | null>(null);
 	const { play } = useSoundFx();
 	const artwork = useArtworkSource({
@@ -37,11 +47,63 @@ export default function Studio() {
 	});
 	const controls = useArtworkSettings();
 	const { settings } = controls;
+	const recipe = useMemo<StudioRecipe>(
+		() => ({
+			settings,
+			material,
+			strength,
+			brush,
+			keepMarks,
+			sample: artwork.sample,
+			useUpload: artwork.useUpload,
+		}),
+		[
+			settings,
+			material,
+			strength,
+			brush,
+			keepMarks,
+			artwork.sample,
+			artwork.useUpload,
+		],
+	);
+	function applyRecipe(next: StudioRecipe) {
+		controls.apply(next.settings);
+		artwork.restoreSource(next.sample, next.useUpload);
+		setMaterial(next.material);
+		setStrength(next.strength);
+		setBrush(next.brush);
+		setKeepMarks(next.keepMarks);
+		setTool("touch");
+		setOriginal(false);
+	}
+	const recipes = useStudioRecipes(recipe, applyRecipe, setNotice);
+	useEffect(() => {
+		function keyboard(event: KeyboardEvent) {
+			const target = event.target as HTMLElement;
+			if (
+				target.closest(
+					"input, textarea, select, [contenteditable=true], [role=slider]",
+				) ||
+				!(event.metaKey || event.ctrlKey) ||
+				event.altKey
+			)
+				return;
+			if (event.key.toLowerCase() === "z") {
+				event.preventDefault();
+				if (event.shiftKey) recipes.redo();
+				else recipes.undo();
+			}
+		}
+		window.addEventListener("keydown", keyboard);
+		return () => window.removeEventListener("keydown", keyboard);
+	}, [recipes]);
 	const { exporting, download } = usePngExport({
 		pixels: artwork.pixels,
 		settings,
 		mode: artwork.mode,
 		capture,
+		options: exportOptions,
 		onError: setError,
 		onNotice: setNotice,
 	});
@@ -70,6 +132,7 @@ export default function Studio() {
 						pixels={artwork.pixels}
 						title={artwork.title}
 						settings={settings}
+						exportOptions={exportOptions}
 						material={material}
 						strength={strength}
 						brush={brush}
@@ -84,17 +147,59 @@ export default function Studio() {
 						onNotice={setNotice}
 						onError={setError}
 					/>
-					<ControlsSidebar>
-						<EffectControls
-							effect={settings.effect}
-							setEffect={controls.setEffect}
+					<ControlsSidebar
+						header={
+							<div className="flex shrink-0 items-center justify-between border-b border-border px-4 py-3">
+								<div>
+									<h1 className="font-display text-lg font-semibold tracking-tight text-text">
+										Dotform
+									</h1>
+									<p className="text-[10px] text-text-faint">
+										A little texture goes a long way.
+									</p>
+								</div>
+								<div className="flex gap-1">
+									<button
+										type="button"
+										aria-label="Undo"
+										title="Undo · ⌘/Ctrl Z"
+										disabled={!recipes.canUndo}
+										onClick={recipes.undo}
+										className="rounded-md p-2 text-text-muted hover:bg-surface-hover disabled:opacity-30"
+									>
+										<Undo2 size={16} />
+									</button>
+									<button
+										type="button"
+										aria-label="Redo"
+										title="Redo · ⌘/Ctrl Shift Z"
+										disabled={!recipes.canRedo}
+										onClick={recipes.redo}
+										className="rounded-md p-2 text-text-muted hover:bg-surface-hover disabled:opacity-30"
+									>
+										<Redo2 size={16} />
+									</button>
+								</div>
+							</div>
+						}
+						footer={
+							<OutputControls
+								options={exportOptions}
+								setOptions={setExportOptions}
+								download={download}
+								loading={artwork.loading}
+								exporting={exporting}
+							/>
+						}
+					>
+						<LooksControls
+							current={recipe}
+							apply={(next) => {
+								recipes.select(next);
+								play("click");
+							}}
+							recipes={recipes}
 						/>
-						<SourceControls
-							artwork={artwork}
-							error={error}
-							dismissError={() => setError("")}
-						/>
-						<TextureControls reset={reset} />
 						<MaterialControls
 							material={material}
 							setMaterial={(value) => {
@@ -112,14 +217,20 @@ export default function Studio() {
 							setKeepMarks={setKeepMarks}
 							clearMarks={() => setClearVersion((version) => version + 1)}
 						/>
-						<div className="min-h-[16px] flex-1" aria-hidden="true" />
-						<OutputControls
+						<SourceControls
+							artwork={artwork}
+							error={error}
+							dismissError={() => setError("")}
+						/>
+						<EffectControls
+							effect={settings.effect}
+							setEffect={controls.setEffect}
+						/>
+						<TextureControls reset={reset} />
+						<ColorControls
 							settings={settings}
 							choosePalette={controls.choosePalette}
 							toggleTransparent={controls.toggleTransparent}
-							download={download}
-							loading={artwork.loading}
-							exporting={exporting}
 						/>
 					</ControlsSidebar>
 				</div>

@@ -106,6 +106,14 @@ export function useArtworkSource({
 		loadFile,
 		chooseMode,
 		chooseSample,
+		restoreSource: (name: SourceName, useUploaded: boolean) => {
+			request.current += 1;
+			setLoading(false);
+			setMode(patternSources.includes(name) ? "Pattern" : "Image");
+			setSample(name);
+			setUseUpload(useUploaded && !!uploaded);
+			onSelect();
+		},
 	};
 }
 export type ArtworkSource = ReturnType<typeof useArtworkSource>;

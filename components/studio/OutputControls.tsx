@@ -1,104 +1,91 @@
 import { ArrowDownToLine } from "lucide-react";
-import { useSoundFx } from "@/components/sound-provider";
-import type { RenderSettings } from "@/lib/renderer";
-import { ControlSection } from "./ControlSection";
-import { palettes } from "./presets";
-
-function Switch({ on }: { on: boolean }) {
-	return (
-		<span
-			className={`relative block h-4 w-7 shrink-0 rounded-full transition-colors ${
-				on ? "bg-cta" : "bg-surface-active"
-			}`}
-		>
-			<span
-				className={`absolute top-[2px] block size-3 rounded-full transition-[left] ${
-					on ? "left-[14px] bg-surface" : "left-[2px] bg-text-faint"
-				}`}
-			/>
-		</span>
-	);
-}
+import {
+	type ExportOptions,
+	exportDimensions,
+	exportRatios,
+} from "@/lib/export-artwork";
 
 export function OutputControls({
-	settings,
-	choosePalette,
-	toggleTransparent,
+	options,
+	setOptions,
 	download,
 	loading,
 	exporting,
 }: {
-	settings: RenderSettings;
-	choosePalette: (palette: { ink: string; paper: string }) => void;
-	toggleTransparent: () => void;
+	options: ExportOptions;
+	setOptions: (options: ExportOptions) => void;
 	download: () => void;
 	loading: boolean;
 	exporting: boolean;
 }) {
-	const { ink, paper, transparent } = settings;
-	const { play } = useSoundFx();
-	const paletteName =
-		palettes.find((p) => p.ink === ink && p.paper === paper)?.name ?? "Custom";
+	const { width, height } = exportDimensions(options);
 	return (
-		<ControlSection
-			label="05 / OTHER"
-			className="shrink-0"
-			extra={<span className="text-xs text-text-faint">{paletteName}</span>}
+		<section
+			aria-label="Artwork export"
+			className="border-t border-border bg-surface p-4"
 		>
-			<div className="flex gap-1.5">
-				{palettes.map((palette) => {
-					const selected = ink === palette.ink && paper === palette.paper;
-					return (
-						<button
-							type="button"
-							key={palette.name}
-							className={`h-[30px] min-w-0 flex-1 place-items-center rounded-[5px] border border-border hover:-translate-y-0.5 ${
-								selected
-									? "outline-[1.5px] outline-currentColor outline-offset-2"
-									: ""
-							}`}
-							onClick={() => {
-								play("click");
-								choosePalette(palette);
-							}}
-							aria-label={`${palette.name} palette`}
-							aria-pressed={selected}
-							title={palette.name}
-							style={{ background: palette.paper, color: palette.ink }}
-						>
-							<span
-								className="mx-auto block size-3.5 rounded-full"
-								style={{ background: palette.ink }}
-							/>
-						</button>
-					);
-				})}
+			<div className="mb-3 flex items-center justify-between">
+				<span className="text-xs font-semibold tracking-[1.5px] text-text-faint">
+					EXPORT ARTWORK
+				</span>
+				<span className="text-[10px] tabular-nums text-text-muted">
+					{width} × {height}
+				</span>
 			</div>
-
+			<div className="mb-3 grid grid-cols-[1fr_92px] gap-2 text-xs text-text">
+				<label>
+					<span className="sr-only">Aspect ratio</span>
+					<select
+						aria-label="Export aspect ratio"
+						value={options.ratio}
+						onChange={(event) => {
+							const ratio = exportRatios.find(
+								(item) => item.value === event.target.value,
+							);
+							if (ratio) setOptions({ ...options, ratio: ratio.value });
+						}}
+						className="h-9 w-full rounded-md border border-border bg-surface-muted px-2"
+					>
+						{exportRatios.map((item) => (
+							<option key={item.value} value={item.value}>
+								{item.label}
+							</option>
+						))}
+					</select>
+				</label>
+				<label>
+					<span className="sr-only">Long edge</span>
+					<select
+						aria-label="Export resolution"
+						value={options.size}
+						onChange={(event) =>
+							setOptions({ ...options, size: Number(event.target.value) })
+						}
+						className="h-9 w-full rounded-md border border-border bg-surface-muted px-2"
+					>
+						{[512, 1024, 2048].map((size) => (
+							<option key={size} value={size}>
+								{size}px
+							</option>
+						))}
+					</select>
+				</label>
+			</div>
 			<button
 				type="button"
-				role="switch"
-				aria-checked={transparent}
-				onClick={() => {
-					toggleTransparent();
-					play("toggle");
-				}}
-				className="mt-2.5 flex w-full items-center justify-between rounded-[5px] px-1.5 py-1.5 text-sm text-text-muted hover:bg-surface-hover"
-			>
-				<span>Transparent background</span>
-				<Switch on={transparent} />
-			</button>
-
-			<button
-				type="button"
-				className="mt-2.5 flex w-full items-center justify-center gap-2 rounded-[6px] bg-cta px-3 py-2.5 text-sm text-cta-text shadow-panel hover:bg-cta-hover"
+				className="flex w-full items-center justify-center gap-2 rounded-md bg-cta px-3 py-2.5 text-sm text-cta-text shadow-panel hover:bg-cta-hover"
 				onClick={download}
 				disabled={loading || exporting}
 			>
-				<ArrowDownToLine className="mr-auto" size={15} />
-				{exporting ? "Exporting…" : "Export PNG"}
-				<span className="ml-auto text-cta-accent">↗</span>
+				<ArrowDownToLine size={15} />
+				{exporting ? "Exporting…" : "Export artwork PNG"}
 			</button>
-		</ControlSection>
+			<p className="mt-2 text-[10px] leading-relaxed text-text-faint">
+				{options.ratio !== "square"
+					? "Centered crop · use Canvas to see the framing."
+					: "Artwork only · no preview frame."}
+				{options.size === 2048 && " 2× upscaled."}
+			</p>
+		</section>
 	);
 }

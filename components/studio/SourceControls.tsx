@@ -27,7 +27,7 @@ export function SourceControls({
 	const input = useRef<HTMLInputElement>(null);
 	const { play } = useSoundFx();
 	return (
-		<ControlSection label="02 / SHAPE" className="shrink-0">
+		<ControlSection label="03 / SOURCE" className="shrink-0">
 			<div className="mb-2.5 flex rounded-[6px] bg-surface-muted p-[3px]">
 				{(["Image", "Pattern"] as const).map((item) => (
 					<button

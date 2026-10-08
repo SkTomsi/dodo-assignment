@@ -4,15 +4,17 @@ export async function exportFolder({
 	position,
 	paper,
 	transparent,
+	size = 1024,
 }: {
 	svg: SVGSVGElement;
 	artwork: HTMLCanvasElement;
 	position: { x: number; y: number };
 	paper: string;
 	transparent: boolean;
+	size?: number;
 }): Promise<Blob> {
 	const output = document.createElement("canvas");
-	output.width = output.height = 1024;
+	output.width = output.height = size;
 	const ctx = output.getContext("2d");
 	if (!ctx) throw new Error("Canvas is unavailable.");
 	const clone = svg.cloneNode(true) as SVGSVGElement;
@@ -35,8 +37,8 @@ export async function exportFolder({
 		image.src = url;
 		await image.decode();
 		// Center the complete folder on a square icon with transparent padding.
-		const scale = 896 / 444;
-		ctx.translate(64, (1024 - 376 * scale) / 2);
+		const scale = (size * 0.875) / 444;
+		ctx.translate(size * 0.0625, (size - 376 * scale) / 2);
 		ctx.scale(scale, scale);
 		ctx.drawImage(image, 0, 0, 444, 376);
 		const face = svg.querySelector("[data-folder-face]")?.getAttribute("d");

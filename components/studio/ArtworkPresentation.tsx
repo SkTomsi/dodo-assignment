@@ -55,6 +55,7 @@ export function ArtworkPresentation({
 	onError,
 	capture,
 	touching,
+	exportSize,
 }: {
 	previewStyle: PreviewStyle;
 	cardCopy: CardPlaceholder;
@@ -67,6 +68,7 @@ export function ArtworkPresentation({
 	onError: (message: string) => void;
 	capture: RefObject<ArtworkCapture | null>;
 	touching: boolean;
+	exportSize: number;
 }) {
 	const frame = useRef<HTMLDivElement>(null);
 	const [exporting, setExporting] = useState(false);
@@ -95,14 +97,15 @@ export function ArtworkPresentation({
 				position,
 				paper,
 				transparent,
+				size: exportSize,
 			});
 			const url = URL.createObjectURL(blob);
 			const link = document.createElement("a");
 			link.href = url;
-			link.download = `dotform-folder-${effect.toLowerCase()}.png`;
+			link.download = `dotform-folder-${effect.toLowerCase()}-${exportSize}x${exportSize}.png`;
 			link.click();
 			setTimeout(() => URL.revokeObjectURL(url), 1000);
-			onNotice("Folder exported · 1024 × 1024 PNG");
+			onNotice(`Folder exported · ${exportSize} × ${exportSize} PNG`);
 		} catch {
 			onError("Folder export failed. Please try again.");
 		} finally {
@@ -291,6 +294,7 @@ export function ArtworkPresentation({
 						<Download size={12} aria-hidden="true" />
 						{exporting ? "Exporting…" : "Export folder PNG"}
 					</button>
+					<span className="text-text-faint">{exportSize}px · square</span>
 				</fieldset>
 			)}
 		</>

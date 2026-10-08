@@ -1,6 +1,7 @@
 import { Upload } from "lucide-react";
 import { type RefObject, useEffect, useRef, useState } from "react";
 import { useSoundFx } from "@/components/sound-provider";
+import { type ExportOptions, exportRatios } from "@/lib/export-artwork";
 import {
 	type ArtworkCapture,
 	type Material,
@@ -18,6 +19,7 @@ export function ArtworkWorkspace({
 	pixels,
 	title,
 	settings,
+	exportOptions,
 	material,
 	strength,
 	brush,
@@ -36,6 +38,7 @@ export function ArtworkWorkspace({
 	pixels: ImageData;
 	title: string;
 	settings: RenderSettings;
+	exportOptions: ExportOptions;
 	material: Material;
 	strength: number;
 	brush: number;
@@ -123,6 +126,7 @@ export function ArtworkWorkspace({
 					onNotice={onNotice}
 					onError={onError}
 					capture={capture}
+					exportSize={exportOptions.size}
 					touching={material !== "paper" && tool === "touch" && !original}
 				>
 					<div
@@ -152,6 +156,24 @@ export function ArtworkWorkspace({
 								aria-label="Original source image"
 							/>
 						)}
+						{previewStyle === "canvas" &&
+							exportOptions.ratio !== "square" &&
+							(() => {
+								const ratio =
+									exportRatios.find(
+										(item) => item.value === exportOptions.ratio,
+									)?.ratio ?? 1;
+								return (
+									<div
+										aria-hidden="true"
+										className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border border-white/80 shadow-[0_0_0_999px_#00000055]"
+										style={{
+											width: `${Math.min(1, ratio) * 100}%`,
+											height: `${Math.min(1, 1 / ratio) * 100}%`,
+										}}
+									/>
+								);
+							})()}
 					</div>
 				</ArtworkPresentation>
 

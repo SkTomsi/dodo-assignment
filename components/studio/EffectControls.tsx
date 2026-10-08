@@ -12,7 +12,7 @@ export function EffectControls({
 }) {
 	const { play } = useSoundFx();
 	return (
-		<ControlSection label="01 / TYPE" className="shrink-0">
+		<ControlSection label="PRINT STYLE" className="shrink-0">
 			<div className="flex rounded-[6px] bg-surface-muted p-[3px]">
 				{effects.map((item, i) => (
 					<button

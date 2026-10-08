@@ -38,12 +38,12 @@ export function SoundProvider({ children }: { children: ReactNode }) {
 		return window.localStorage.getItem(STORAGE_KEY) !== "off";
 	});
 
-	const [playClick] = useSound("/sounds/click.wav", {
+	const [playClick] = useSound("/sounds/click.mp3", {
 		volume: 0.3,
 		interrupt: true,
 		soundEnabled: soundOn,
 	});
-	const [playToggle] = useSound("/sounds/toggle.wav", {
+	const [playToggle] = useSound("/sounds/click.mp3", {
 		volume: 0.3,
 		interrupt: true,
 		soundEnabled: soundOn,

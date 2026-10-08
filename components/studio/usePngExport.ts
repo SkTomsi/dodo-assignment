@@ -1,5 +1,10 @@
 import { type RefObject, useState } from "react";
 import { useSoundFx } from "@/components/sound-provider";
+import {
+	type ExportOptions,
+	exportDimensions,
+	frameArtwork,
+} from "@/lib/export-artwork";
 import type { ArtworkCapture } from "@/lib/material";
 import { type RenderSettings, renderArt } from "@/lib/renderer";
 
@@ -10,6 +15,7 @@ export function usePngExport({
 	onError,
 	onNotice,
 	capture,
+	options,
 }: {
 	pixels: ImageData;
 	settings: RenderSettings;
@@ -17,6 +23,7 @@ export function usePngExport({
 	onError: (message: string) => void;
 	onNotice: (message: string) => void;
 	capture: RefObject<ArtworkCapture | null>;
+	options: ExportOptions;
 }) {
 	const [exporting, setExporting] = useState(false);
 	const { play } = useSoundFx();
@@ -29,6 +36,7 @@ export function usePngExport({
 			const snapshot = capture.current?.();
 			output = snapshot ?? document.createElement("canvas");
 			if (!snapshot) renderArt(output, pixels, settings);
+			output = frameArtwork(output, options);
 		} catch {
 			setExporting(false);
 			onError("Export failed. Please try again.");
@@ -43,10 +51,11 @@ export function usePngExport({
 			const url = URL.createObjectURL(blob);
 			const link = document.createElement("a");
 			link.href = url;
-			link.download = `dotform-${settings.effect.toLowerCase()}-${mode.toLowerCase()}.png`;
+			const { width, height } = exportDimensions(options);
+			link.download = `dotform-${settings.effect.toLowerCase()}-${mode.toLowerCase()}-${width}x${height}.png`;
 			link.click();
 			setTimeout(() => URL.revokeObjectURL(url), 1000);
-			onNotice("PNG exported. Go make something good.");
+			onNotice(`Artwork exported · ${width} × ${height} PNG`);
 			play("success");
 		}, "image/png");
 	}
