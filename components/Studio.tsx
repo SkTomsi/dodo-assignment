@@ -192,13 +192,28 @@ export default function Studio() {
 							/>
 						}
 					>
-						<LooksControls
-							current={recipe}
-							apply={(next) => {
-								recipes.select(next);
-								play("click");
-							}}
-							recipes={recipes}
+						<SourceControls
+							artwork={artwork}
+							error={error}
+							dismissError={() => setError("")}
+						>
+							<details className="mt-4 border-t border-border pt-3">
+								<summary className="cursor-pointer text-xs text-text-muted">
+									Looks & saved recipes
+								</summary>
+								<LooksControls
+									current={recipe}
+									apply={(next) => {
+										recipes.select(next);
+										play("click");
+									}}
+									recipes={recipes}
+								/>
+							</details>
+						</SourceControls>
+						<EffectControls
+							effect={settings.effect}
+							setEffect={controls.setEffect}
 						/>
 						<MaterialControls
 							material={material}
@@ -216,15 +231,6 @@ export default function Studio() {
 							keepMarks={keepMarks}
 							setKeepMarks={setKeepMarks}
 							clearMarks={() => setClearVersion((version) => version + 1)}
-						/>
-						<SourceControls
-							artwork={artwork}
-							error={error}
-							dismissError={() => setError("")}
-						/>
-						<EffectControls
-							effect={settings.effect}
-							setEffect={controls.setEffect}
 						/>
 						<TextureControls reset={reset} />
 						<ColorControls

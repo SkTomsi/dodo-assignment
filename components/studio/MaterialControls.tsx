@@ -24,7 +24,7 @@ export function MaterialControls({
 }) {
 	return (
 		<ControlSection
-			label="02 / FINISH"
+			label="03 / TEXTURE"
 			className="shrink-0"
 			extra={
 				<span className="text-[10px] tracking-wide text-text-muted">

@@ -26,13 +26,13 @@ Biome uses tabs, recommended React/Next.js rules, and Tailwind CSS v4 parsing. G
 - Explore locally generated Bloom, Orbit, and Sphere samples.
 - Generate Waves, Ripple, and Mesh patterns.
 - Switch between halftone dots, 4×4 Bayer ordered dithering, and line shading.
-- Open the Texture section to use DialKit for spacing, mark size, rotation, contrast, brightness, scale, inversion, animation, and motion.
+- Use the visible Fine-tune section for DialKit spacing, mark size, rotation, contrast, brightness, scale, inversion, animation, and motion.
 - Use the Color section for custom ink/paper colors, transparent backgrounds, and five palette presets.
 - Compare the source, preview the artwork on a UI card, and export PNG artwork without the card's text or frame.
 
 ## Looks + Export
 
-Eight curated looks combine a source, print style, palette, and finish. Use the look strip's arrows, horizontal scrolling, or keyboard focus to explore all eight; every setting remains editable. Looks and finishes lead the sidebar, advanced texture controls start collapsed, and artwork export stays pinned below the desktop controls.
+Eight curated looks combine a source, print style, palette, and finish. Open **Looks & saved recipes** in Source, then use the look strip's arrows, horizontal scrolling, or keyboard focus to explore all eight; every setting remains editable. The sidebar follows **Source → Stamp → Texture → Fine-tune → Color**. Fine-tune is a separate, expanded section below the material finishes, and artwork export stays pinned below the desktop controls.
 
 Save up to 20 named recipes in this browser, restore them from the Saved tab, or delete recipes you no longer need. The last working recipe restores on refresh. Recipes contain source selection and print/finish settings, not uploaded image files, thermal brush strokes, folder position, or export options. Re-upload an image after refreshing to use it with a saved recipe. Local storage is optional; if unavailable, editing and export still work.
 

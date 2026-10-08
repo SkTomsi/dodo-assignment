@@ -41,7 +41,7 @@ export function LooksControls({
 	const gallery = useRef<HTMLDivElement>(null);
 	return (
 		<ControlSection
-			label="01 / LOOKS"
+			label="LOOKS"
 			extra={
 				<button
 					type="button"

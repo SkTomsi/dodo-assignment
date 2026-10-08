@@ -1,5 +1,5 @@
 import { Upload, X } from "lucide-react";
-import { useRef } from "react";
+import { type ReactNode, useRef } from "react";
 import { useSoundFx } from "@/components/sound-provider";
 import { ControlSection } from "./ControlSection";
 import { SourceSample } from "./SourceSample";
@@ -9,10 +9,12 @@ export function SourceControls({
 	artwork,
 	error,
 	dismissError,
+	children,
 }: {
 	artwork: ArtworkSource;
 	error: string;
 	dismissError: () => void;
+	children?: ReactNode;
 }) {
 	const {
 		mode,
@@ -27,7 +29,7 @@ export function SourceControls({
 	const input = useRef<HTMLInputElement>(null);
 	const { play } = useSoundFx();
 	return (
-		<ControlSection label="03 / SOURCE" className="shrink-0">
+		<ControlSection label="01 / SOURCE" className="shrink-0">
 			<div className="mb-2.5 flex rounded-[6px] bg-surface-muted p-[3px]">
 				{(["Image", "Pattern"] as const).map((item) => (
 					<button
@@ -115,6 +117,7 @@ export function SourceControls({
 					event.target.value = "";
 				}}
 			/>
+			{children}
 		</ControlSection>
 	);
 }

@@ -294,7 +294,6 @@ export function ArtworkPresentation({
 						<Download size={12} aria-hidden="true" />
 						{exporting ? "Exporting…" : "Export folder PNG"}
 					</button>
-					<span className="text-text-faint">{exportSize}px · square</span>
 				</fieldset>
 			)}
 		</>
