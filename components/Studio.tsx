@@ -63,8 +63,8 @@ export default function Studio() {
 	}, [notice]);
 	return (
 		<div className="min-h-dvh bg-bg">
-			<main className="mx-auto max-w-[1360px] px-4 py-4 min-[641px]:px-6 min-[900px]:h-dvh min-[900px]:py-5">
-				<div className="grid grid-cols-1 gap-5 min-[641px]:gap-[22px] min-[900px]:h-full min-[900px]:grid-cols-[minmax(0,1fr)_296px] min-[1200px]:grid-cols-[minmax(0,1fr)_318px]">
+			<main className="mx-auto max-w-[1360px] px-4 py-4 min-[641px]:px-6 min-[900px]:h-dvh min-[900px]:py-6">
+				<div className="grid grid-cols-1 gap-6 min-[900px]:h-full min-[900px]:grid-cols-[minmax(0,1fr)_320px] min-[1200px]:gap-7 min-[1200px]:grid-cols-[minmax(0,1fr)_344px]">
 					<ArtworkWorkspace
 						source={artwork.source}
 						pixels={artwork.pixels}

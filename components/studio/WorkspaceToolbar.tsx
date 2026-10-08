@@ -35,7 +35,7 @@ export function WorkspaceToolbar({
 			);
 	}, [resolvedTheme]);
 	return (
-		<div className="flex h-[46px] shrink-0 items-center justify-between gap-3 border-b border-border px-3">
+		<div className="flex h-14 shrink-0 items-center justify-between gap-3 px-4 min-[641px]:px-5">
 			<span className="flex min-w-0 items-center gap-2 text-xs tracking-[1.2px] text-text-faint uppercase">
 				<span className="size-1 shrink-0 rounded-full bg-chip" />
 				<span className="truncate">{title}</span>

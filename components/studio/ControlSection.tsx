@@ -13,8 +13,8 @@ export function ControlSection({
 	className?: string;
 }) {
 	return (
-		<section className={`rounded-[8px] bg-surface p-3 ${className}`}>
-			<div className="mb-2.5 flex min-h-[14px] items-center justify-between text-text-faint">
+		<section className={`rounded-[10px] bg-surface p-4 ${className}`}>
+			<div className="mb-4 flex min-h-[14px] items-center justify-between text-text-faint">
 				<span className={sectionLabel}>{label}</span>
 				{extra}
 			</div>

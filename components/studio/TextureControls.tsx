@@ -9,8 +9,8 @@ export function TextureControls({ reset }: { reset: () => void }) {
 	const isDark = resolvedTheme === "dark";
 	const { play } = useSoundFx();
 	return (
-		<section className="flex min-h-[200px] shrink-0 flex-col rounded-[8px] bg-surface p-3">
-			<div className="mb-2.5 flex min-h-[14px] shrink-0 items-center justify-between text-text-faint">
+		<section className="flex min-h-[200px] shrink-0 flex-col rounded-[10px] bg-surface p-4">
+			<div className="mb-4 flex min-h-[14px] shrink-0 items-center justify-between text-text-faint">
 				<span className={sectionLabel}>03 / TEXTURE</span>
 				<button
 					type="button"

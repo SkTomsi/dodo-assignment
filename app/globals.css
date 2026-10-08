@@ -210,8 +210,8 @@
 
 .sidebar .dialkit-root[data-theme="light"],
 .sidebar .dialkit-root[data-theme="dark"] {
-	--dial-row-height: 28px;
-	--dial-row-gap: 4px;
+	--dial-row-height: 32px;
+	--dial-row-gap: 6px;
 	--dial-radius: 5px;
 	--dial-glass-bg: var(--color-surface);
 	--dial-surface: var(--color-surface-muted);

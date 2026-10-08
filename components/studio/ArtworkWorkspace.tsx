@@ -67,7 +67,7 @@ export function ArtworkWorkspace({
 
 	return (
 		<section
-			className="flex min-h-0 flex-col overflow-hidden rounded-[10px] border border-border bg-surface shadow-panel"
+			className="flex min-h-0 flex-col overflow-hidden rounded-xl bg-surface shadow-panel"
 			aria-label="Artwork workspace"
 		>
 			<WorkspaceToolbar
@@ -86,7 +86,7 @@ export function ArtworkWorkspace({
 				}}
 			/>
 			{material !== "paper" && (
-				<div className="flex min-h-11 shrink-0 flex-wrap items-center justify-between gap-2 border-b border-border px-3 py-2">
+				<div className="flex min-h-14 shrink-0 flex-wrap items-center justify-between gap-3 px-4 py-3 min-[641px]:px-5">
 					<span className="text-xs text-text-muted">
 						{original
 							? "Original source"
@@ -118,7 +118,7 @@ export function ArtworkWorkspace({
 
 			<section
 				aria-label="Image drop area"
-				className={`relative flex items-center justify-center overflow-hidden bg-surface-muted p-4 min-[641px]:p-6 aspect-square min-[900px]:aspect-auto min-[900px]:min-h-0 min-[900px]:flex-1 ${
+				className={`relative flex items-center justify-center overflow-hidden bg-surface-muted p-6 min-[641px]:p-8 aspect-square min-[900px]:aspect-auto min-[900px]:min-h-0 min-[900px]:flex-1 ${
 					previewStyle !== "canvas" ? "min-h-[500px]" : ""
 				}`}
 				onDragOver={(event) => {
@@ -190,7 +190,7 @@ export function ArtworkWorkspace({
 				)}
 			</section>
 
-			<div className="flex h-10 shrink-0 items-center justify-between gap-2.5 border-t border-border px-3 text-xs text-text-faint">
+			<div className="flex h-12 shrink-0 items-center justify-between gap-3 px-4 text-xs text-text-faint min-[641px]:px-5">
 				<button
 					type="button"
 					onClick={() => {
