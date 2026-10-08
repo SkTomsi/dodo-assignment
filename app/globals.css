@@ -13,11 +13,11 @@
 --------------------------------------------------------------------------- */
 
 @theme static {
-	--color-bg: oklch(1 0 0);
-	--color-surface: oklch(1 0 0);
-	--color-surface-muted: oklch(0.985 0 0);
+	--color-bg: oklch(99% 0 0);
+	--color-surface: oklch(100% 0 0);
+	--color-surface-muted: oklch(98% 0 0);
 	--color-surface-hover: oklch(0.97 0 0);
-	--color-surface-active: oklch(0.946 0 0);
+	--color-surface-active: oklch(95.2% 0 0);
 
 	--color-border: oklch(0.937 0 0);
 	--color-border-strong: oklch(0.845 0 0);
@@ -61,9 +61,9 @@
 }
 
 .dark {
-	--color-bg: oklch(0 0 0);
-	--color-surface: oklch(0.145 0 0);
-	--color-surface-muted: oklch(0.178 0 0);
+	--color-bg: oklch(22% 0 0);
+	--color-surface: oklch(23% 0 0);
+	--color-surface-muted: oklch(25% 0 0);
 	--color-surface-hover: oklch(0.218 0 0);
 	--color-surface-active: oklch(0.248 0 0);
 

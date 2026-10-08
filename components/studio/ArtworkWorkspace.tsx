@@ -72,6 +72,10 @@ export function ArtworkWorkspace({
 		>
 			<WorkspaceToolbar
 				title={title}
+				material={material}
+				tool={tool}
+				setTool={setTool}
+				original={original}
 				previewStyle={previewStyle}
 				setPreviewStyle={(style) => {
 					if (
@@ -85,37 +89,6 @@ export function ArtworkWorkspace({
 					if (style !== "folder") setTool("touch");
 				}}
 			/>
-			{material !== "paper" && (
-				<div className="flex min-h-14 shrink-0 flex-wrap items-center justify-between gap-3 px-4 py-3 min-[641px]:px-5">
-					<span className="text-xs text-text-muted">
-						{original
-							? "Original source"
-							: material === "thermal"
-								? "Drag to warm the ink · Arrow keys to draw"
-								: "Move to catch the light · Arrow keys to explore"}
-					</span>
-					<fieldset
-						className="flex gap-1 rounded-[5px] bg-surface-muted p-0.5"
-						aria-label="Surface tools"
-					>
-						{(["touch", "move"] as const).map((value) => (
-							<button
-								key={value}
-								type="button"
-								aria-pressed={tool === value}
-								disabled={
-									original || (value === "move" && previewStyle !== "folder")
-								}
-								onClick={() => setTool(value)}
-								className={`rounded px-3 py-1 text-xs capitalize ${tool === value ? "bg-surface text-text shadow-tab" : "text-text-muted"}`}
-							>
-								{value === "touch" && material !== "thermal" ? "Light" : value}
-							</button>
-						))}
-					</fieldset>
-				</div>
-			)}
-
 			<section
 				aria-label="Image drop area"
 				className={`relative flex items-center justify-center overflow-hidden bg-surface-muted p-6 min-[641px]:p-8 aspect-square min-[900px]:aspect-auto min-[900px]:min-h-0 min-[900px]:flex-1 ${
