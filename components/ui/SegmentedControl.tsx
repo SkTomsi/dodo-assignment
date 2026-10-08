@@ -5,8 +5,9 @@ import { SoundButton } from "./SoundButton";
 
 const styles = {
 	compact: {
-		group: "flex rounded-[6px] bg-surface-muted p-[3px]",
-		button: "min-w-0 flex-1 gap-1.5 rounded-[4px] px-1 py-[6px] text-sm",
+		group: "flex rounded-[6px] bg-surface-muted p-[4px]",
+		button:
+			"min-w-0 flex-1 gap-1.5 rounded-[4px] px-1 py-[6px] text-sm shadow-0",
 		selected: "text-text",
 		idle: "text-text-faint hover:bg-surface-hover",
 	},
